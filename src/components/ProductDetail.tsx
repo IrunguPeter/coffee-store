@@ -17,7 +17,7 @@ export default function ProductDetail() {
       <div className="page-width section text-center">
         <ArrowLeft size={20} strokeWidth={2} className="text-soft mb-4 inline-block cursor-pointer" onClick={() => navigate(-1)} />
         <h1 className="font-serif text-2xl text-ink mb-2">Product not found</h1>
-        <p className="text-soft">The coffee you're looking for isn't available right now.</p>
+        <p className="text-soft">The item you're looking for isn't available right now.</p>
       </div>
     );
   }
@@ -64,9 +64,11 @@ export default function ProductDetail() {
                     </span>
                   )}
                 </div>
-                <p className="text-xs text-soft mono tracking-wide uppercase">
-                  {product.weight} · {product.origin} · {product.roast} roast
-                </p>
+                {product.weight && (
+                  <p className="text-xs text-soft mono tracking-wide uppercase">
+                    {product.weight}
+                  </p>
+                )}
               </div>
               <div className="flex items-center gap-2">
                 {product.bestseller && (
@@ -83,33 +85,8 @@ export default function ProductDetail() {
             </div>
 
             <div>
-              <h3 className="font-serif text-lg font-bold text-ink mb-2">About this coffee</h3>
+              <h3 className="font-serif text-lg font-bold text-ink mb-2">About this product</h3>
               <p className="text-soft leading-relaxed max-w-md">{product.description}</p>
-            </div>
-
-            {product.notes && product.notes.length > 0 && (
-              <div>
-                <h3 className="font-serif text-lg font-bold text-ink mb-2">Tasting notes</h3>
-                <div className="flex flex-wrap gap-2">
-                  {product.notes.map((note) => (
-                    <span
-                      key={note}
-                      className="px-3 py-1 rounded-full border border-line bg-cream text-soft text-xs"
-                    >
-                      {note}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            <div className="pt-4 border-t border-line">
-              <h3 className="font-serif text-lg font-bold text-ink mb-4">Brew it fresh</h3>
-              <div className="grid md:grid-cols-3 gap-4">
-                <InfoRow label="Grind" value="Just before brewing" icon={<Mail size={16} />} />
-                <InfoRow label="Water" value="90–96°C / 195–205°F" icon={<Clock size={16} />} />
-                <InfoRow label="Ratio" value="1:16 (coffee:water)" icon={<MapPin size={16} />} />
-              </div>
             </div>
 
             <div className="pt-4 border-t border-line space-y-4">
@@ -141,20 +118,6 @@ export default function ProductDetail() {
             </div>
           </div>
         </div>
-      </div>
-    </div>
-  );
-}
-
-function InfoRow({ label, value, icon }: { label: string; value: string; icon: React.ReactNode }) {
-  return (
-    <div className="flex items-center gap-3">
-      <div className="w-8 h-8 rounded-full bg-coffee/10 flex items-center justify-center text-coffee text-xs">
-        {icon}
-      </div>
-      <div>
-        <div className="text-xs text-soft mono tracking-wide uppercase">{label}</div>
-        <div className="text-sm text-ink">{value}</div>
       </div>
     </div>
   );

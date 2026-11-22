@@ -48,7 +48,7 @@ export default function CartDrawer() {
               </div>
               <p className="text-soft">Your cart is empty.</p>
               <p className="text-xs text-soft mono tracking-wide uppercase mt-2">
-                Add some coffee to get started.
+                Add some items to get started.
               </p>
             </div>
           ) : (

@@ -30,7 +30,7 @@ export default function CheckoutPage() {
             <CheckCircle size={32} strokeWidth={2} className="text-success" />
           </div>
           <h1 className="font-serif text-3xl font-bold text-ink mb-2">Order confirmed</h1>
-          <p className="text-soft mb-8">Thank you for your order. Your coffee is being roasted and will ship soon.</p>
+          <p className="text-soft mb-8">Thank you for your order. Your items are being packed and will ship soon.</p>
           <div className="card p-6 text-left mb-8">
             <div className="flex justify-between text-sm mb-2">
               <span className="text-soft">Order total</span>

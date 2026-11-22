@@ -13,18 +13,17 @@ export default function Hero() {
             Freshly roasted · Shipped weekly
           </span>
           <h1 className="font-display text-4xl md:text-6xl font-bold text-ink leading-tight mb-6">
-            Coffee worth waking up for.
+            Good things, delivered.
           </h1>
           <p className="text-soft text-lg md:text-xl mb-8 max-w-xl leading-relaxed">
-            Single-origin beans, espresso blends, and brew gear — roasted in small batches and
-            delivered to your door.
+            Coffee, tea, kitchenware, home goods, and more — curated essentials for everyday life.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link to="/shop" className="btn-primary">
-              Shop coffee <ArrowRight size={18} strokeWidth={2} />
+              Shop all <ArrowRight size={18} strokeWidth={2} />
             </Link>
-            <Link to="/shop?category=gear" className="btn-outline">
-              Brew gear
+            <Link to="/shop?category=kitchen" className="btn-outline">
+              Kitchen
             </Link>
           </div>
         </div>
