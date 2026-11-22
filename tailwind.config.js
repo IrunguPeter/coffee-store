@@ -13,7 +13,7 @@ export default {
       colors: {
         transparent: 'transparent',
         current: 'currentColor',
-        // Zawadi Crafts & Harvest design system (RGB values for opacity modifier support)
+        // E-shop design system (RGB values for opacity modifier support)
         safari: {
           dark: 'rgb(22 70 7)',
           DEFAULT: 'rgb(46 94 30)',
