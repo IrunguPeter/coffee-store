@@ -2,11 +2,21 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mail, Phone, MapPin, ArrowLeft, CheckCircle, Phone as PhoneIcon } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { createOrder } from '../data/orders';
 import { formatPrice } from '../lib/utils';
 
 export default function CheckoutPage() {
   const navigate = useNavigate();
-  const { items, subtotal, itemCount, clearCart } = useCart();
+  const {
+    items,
+    subtotal,
+    discount,
+    total,
+    itemCount,
+    appliedPromo,
+    clearCart,
+    closeCart,
+  } = useCart();
   const [step, setStep] = useState<'info' | 'payment' | 'success'>('info');
   const [form, setForm] = useState({
     email: '',
@@ -16,6 +26,7 @@ export default function CheckoutPage() {
     zip: '',
     phone: '',
   });
+  const [processing, setProcessing] = useState(false);
 
   if (items.length === 0) {
     navigate('/shop');
@@ -26,22 +37,28 @@ export default function CheckoutPage() {
     return (
       <div className="page-width section">
         <div className="max-w-md mx-auto text-center">
-          <div className="w-20 h-20 rounded-full bg-mpesa/10 flex items-center justify-center mx-auto mb-6">
-            <CheckCircle size={32} strokeWidth={2} className="text-mpesa" />
+          <div className="w-20 h-20 rounded-full bg-[#00B04F]/10 flex items-center justify-center mx-auto mb-6">
+            <CheckCircle size={32} strokeWidth={2} className="text-[#00B04F]" />
           </div>
           <h1 className="text-3xl font-extrabold text-ink mb-2">Order placed!</h1>
           <p className="text-ink-variant mb-8">
-            Asante sana for supporting Kenyan artisans. Your order is being packed.
+            Asante sana for shopping with E-shop. Your order is being packed.
           </p>
           <div className="card p-6 text-left mb-8">
             <div className="flex justify-between text-sm mb-2">
               <span className="text-soft">Order total</span>
-              <span className="font-medium text-ink">{formatPrice(subtotal)}</span>
+              <span className="font-medium text-ink">{formatPrice(total)}</span>
             </div>
             <div className="flex justify-between text-[11px] text-soft mono">
               <span>Items</span>
               <span>{itemCount}</span>
             </div>
+            {appliedPromo && (
+              <div className="flex justify-between text-[11px] text-soft mono mt-1">
+                <span>Promo ({appliedPromo.code})</span>
+                <span className="text-safari font-medium">- {formatPrice(discount)}</span>
+              </div>
+            )}
           </div>
           <button onClick={() => navigate('/shop')} className="w-full btn-primary">
             Browse more
@@ -93,7 +110,7 @@ export default function CheckoutPage() {
               <div className="space-y-5">
                 <div className="card p-5">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-8 h-8 rounded-full bg-mpesa flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full bg-[#00B04F] flex items-center justify-center">
                       <span className="text-[10px] text-white font-bold">📱</span>
                     </div>
                     <span className="font-semibold text-ink">M-Pesa Till / PayBill</span>
@@ -109,10 +126,16 @@ export default function CheckoutPage() {
                     </div>
                     <div className="flex justify-between text-sm mb-1">
                       <span className="text-ink-variant">Amount</span>
-                      <span className="text-xs font-bold text-ink">{formatPrice(subtotal)}</span>
+                      <span className="text-xs font-bold text-ink">{formatPrice(total)}</span>
                     </div>
-                    <div className="p-3 rounded-md bg-mpesa/10 border border-mpesa/20">
-                      <p className="text-[11px] text-safari font-semibold mb-1">
+                    {appliedPromo && (
+                      <div className="flex justify-between text-xs mb-1 mt-1">
+                        <span className="text-ink-variant">Promo ({appliedPromo.code})</span>
+                        <span className="text-xs font-medium text-safari">- {formatPrice(discount)}</span>
+                      </div>
+                    )}
+                    <div className="p-3 rounded-md bg-[#00B04F]/10 border border-[#00B04F]/20">
+                      <p className="text-[11px] text-[#009e43] font-semibold mb-1">
                         An STK push will be sent to {form.phone || 'your registered number'}
                       </p>
                       <p className="text-[11px] text-soft">Enter your M-Pesa PIN to confirm.</p>
@@ -120,8 +143,50 @@ export default function CheckoutPage() {
                   </div>
                 </div>
 
-                <button onClick={() => setStep('success')} className="w-full btn-mpesa py-4 text-base">
-                  Confirm M-Pesa Payment — {formatPrice(subtotal)}
+                <button
+                  onClick={() => {
+                    setProcessing(true);
+                    // Simulate M-Pesa payment processing
+                    setTimeout(() => {
+                      const orderItems = items.map((item) => ({
+                        productId: item.product.id,
+                        name: item.product.name,
+                        price: item.product.price,
+                        quantity: item.quantity,
+                        total: item.product.price * item.quantity,
+                        weight: item.product.weight,
+                      }));
+
+                      createOrder({
+                        customer: {
+                          email: form.email,
+                          name: form.name,
+                          address: form.address,
+                          city: form.city,
+                          zip: form.zip,
+                          phone: form.phone,
+                        },
+                        items: orderItems,
+                        subtotal,
+                        discount,
+                        promoCode: appliedPromo?.code,
+                        promoDescription: appliedPromo?.description,
+                        total,
+                        status: 'paid',
+                        paymentMethod: 'mpesa',
+                        paymentReference: `MP${Date.now().toString().slice(-8)}`,
+                      });
+
+                      setProcessing(false);
+                      clearCart();
+                      closeCart();
+                      setStep('success');
+                    }, 1500);
+                  }}
+                  disabled={processing}
+                  className="w-full btn-mpesa py-4 text-base"
+                >
+                  {processing ? 'Processing M-Pesa...' : `Confirm M-Pesa Payment — ${formatPrice(total)}`}
                 </button>
               </div>
             </>
@@ -149,13 +214,19 @@ export default function CheckoutPage() {
                 <span>Subtotal</span>
                 <span>{formatPrice(subtotal)}</span>
               </div>
+              {discount > 0 && (
+                <div className="flex justify-between text-xs text-safari font-medium">
+                  <span>Promo discount</span>
+                  <span>- {formatPrice(discount)}</span>
+                </div>
+              )}
               <div className="flex justify-between text-[11px] text-soft mono">
                 <span>Shipping</span>
                 <span>Nairobi same-day · KSh 200 flat</span>
               </div>
               <div className="flex justify-between mt-2 text-lg font-extrabold text-ink">
                 <span>Total</span>
-                <span>{formatPrice(subtotal)}</span>
+                <span>{formatPrice(total)}</span>
               </div>
             </div>
           </div>

@@ -6,6 +6,7 @@ import ProductDetail from './components/ProductDetail';
 import CheckoutPage from './components/CheckoutPage';
 import Admin from './components/Admin';
 import { CartProvider } from './context/CartContext';
+import { PromoProvider } from './context/PromoContext';
 
 function Home() {
   return <Hero />;
@@ -14,18 +15,20 @@ function Home() {
 export default function App() {
   return (
     <CartProvider>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<Home />} />
-            <Route path="shop" element={<ProductGrid />} />
-            <Route path="shop/:id" element={<ProductDetail />} />
-            <Route path="checkout" element={<CheckoutPage />} />
-            <Route path="admin" element={<Admin />} />
-          </Route>
-          <Route path="*" element={<Home />} />
-        </Routes>
-      </BrowserRouter>
+      <PromoProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<Home />} />
+              <Route path="shop" element={<ProductGrid />} />
+              <Route path="shop/:id" element={<ProductDetail />} />
+              <Route path="checkout" element={<CheckoutPage />} />
+              <Route path="admin" element={<Admin />} />
+            </Route>
+            <Route path="*" element={<Home />} />
+          </Routes>
+        </BrowserRouter>
+      </PromoProvider>
     </CartProvider>
   );
 }

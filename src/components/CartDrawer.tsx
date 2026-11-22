@@ -5,8 +5,24 @@ import type { Product } from '../data/products';
 import { formatPrice, cn } from '../lib/utils';
 
 export default function CartDrawer() {
-  const { items, subtotal, itemCount, removeItem, updateQuantity, clearCart, closeCart, isOpen } =
-    useCart();
+  const {
+    items,
+    subtotal,
+    discount,
+    total,
+    itemCount,
+    removeItem,
+    updateQuantity,
+    clearCart,
+    closeCart,
+    isOpen,
+    appliedPromo,
+    promoCode,
+    promoError,
+    setPromoCode,
+    applyPromo,
+    removePromo,
+  } = useCart();
   const [checkoutStep, setCheckoutStep] = useState<'cart' | 'checkout' | 'success'>('cart');
 
   if (!isOpen) return null;
@@ -68,15 +84,66 @@ export default function CartDrawer() {
               ))}
             </div>
           )}
+
+          {/* Promo section */}
+          {items.length > 0 && (
+            <div className="mt-4 border border-outline rounded-md p-3 bg-cream-low">
+              <div className="flex gap-2 mb-2">
+                <input
+                  type="text"
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value)}
+                  placeholder="Enter promo code"
+                  className="flex-1 text-sm border border-outline rounded-md px-3 py-2 bg-cream text-ink focus:outline-none focus:ring-1 focus:ring-safari"
+                />
+                <button
+                  onClick={applyPromo}
+                  disabled={!promoCode.trim()}
+                  className="px-3 py-2 rounded-md bg-safari text-white text-xs font-semibold hover:bg-[#214315] transition-colors disabled:opacity-50 disabled:pointer-events-none"
+                >
+                  Apply
+                </button>
+              </div>
+              {promoError && (
+                <p className="text-[11px] text-error mt-1">{promoError}</p>
+              )}
+              {appliedPromo && (
+                <div className="flex items-baseline justify-between mt-2 pt-2 border-t border-outline">
+                  <span className="text-xs text-soft mono tracking-wide uppercase">
+                    Discount ({appliedPromo.code})
+                  </span>
+                  <span className="text-xs font-bold text-safari">- {formatPrice(discount)}</span>
+                  <button
+                    onClick={removePromo}
+                    className="text-[10px] text-soft underline underline-offset-2 hover:text-error"
+                  >
+                    Remove
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         <div className="p-6 border-t border-outline bg-cream-low">
-          <div className="flex items-baseline justify-between mb-6">
-            <span className="text-xs mono tracking-wide uppercase text-ink-variant">Subtotal</span>
-            <span className="text-lg font-bold text-ink">{formatPrice(subtotal)}</span>
+          <div className="space-y-2 mb-4">
+            <div className="flex items-baseline justify-between">
+              <span className="text-xs mono tracking-wide uppercase text-ink-variant">Subtotal</span>
+              <span className="text-lg font-bold text-ink">{formatPrice(subtotal)}</span>
+            </div>
+            {discount > 0 && (
+              <div className="flex items-baseline justify-between">
+                <span className="text-xs text-safari font-medium">Discount</span>
+                <span className="text-xs text-safari font-medium">- {formatPrice(discount)}</span>
+              </div>
+            )}
+          </div>
+          <div className="flex items-baseline justify-between mt-2 pt-2 border-t border-outline">
+            <span className="font-bold text-ink">Total</span>
+            <span className="text-xl font-extrabold text-ink">{formatPrice(total)}</span>
           </div>
 
-          <div className="space-y-3">
+          <div className="space-y-3 mt-4">
             <button
               onClick={() => {
                 if (items.length === 0) return;
@@ -85,7 +152,7 @@ export default function CartDrawer() {
               disabled={items.length === 0}
               className="w-full btn-primary"
             >
-              {items.length === 0 ? 'Your cart is empty' : 'Checkout'}
+              {items.length === 0 ? 'Your cart is empty' : 'Checkout via M-Pesa'}
             </button>
             <button
               onClick={clearCart}
@@ -145,7 +212,7 @@ function CartItemRow({ item, onRemove, onChange }: { item: ReturnType<typeof use
 }
 
 function CheckoutPanel({ onBack }: { onBack: () => void }) {
-  const { items, subtotal, clearCart, closeCart } = useCart();
+  const { items, subtotal, discount, total, clearCart, closeCart } = useCart();
   const [email, setEmail] = useState('');
 
   return (
@@ -179,9 +246,15 @@ function CheckoutPanel({ onBack }: { onBack: () => void }) {
               <span className="text-ink">{formatPrice(item.product.price * item.quantity)}</span>
             </div>
           ))}
+          {discount > 0 && (
+            <div className="flex justify-between text-xs mb-1 mt-1">
+              <span className="text-soft text-safari">Discount</span>
+              <span className="text-ink text-safari">- {formatPrice(discount)}</span>
+            </div>
+          )}
           <div className="flex justify-between mt-2 pt-2 border-t border-outline text-sm font-medium text-ink">
             <span>Total</span>
-            <span>{formatPrice(subtotal)}</span>
+            <span>{formatPrice(total)}</span>
           </div>
         </div>
       </div>
