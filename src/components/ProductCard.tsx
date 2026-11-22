@@ -1,74 +1,25 @@
 import { Link } from 'react-router-dom';
-import { Plus } from 'lucide-react';
+import { ArrowUpRight, Plus } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import type { Product } from '../data/products';
 import { formatPrice } from '../lib/utils';
 
-interface ProductCardProps {
-  product: Product;
-  variant?: 'default' | 'featured';
-}
+interface ProductCardProps { product: Product; variant?: 'default' | 'featured'; }
 
 export default function ProductCard({ product, variant = 'default' }: ProductCardProps) {
   const { addItem } = useCart();
-
-  const isSale = Boolean(product.comparePrice);
-  const badge = product.bestseller ? 'Bestseller' : product.new ? 'New' : null;
+  const badge = product.bestseller ? 'Bestseller' : product.new ? 'New in' : product.featured ? 'House pick' : null;
 
   return (
-    <article className="card group cursor-pointer">
-      <div className="relative overflow-hidden aspect-[4/3] bg-cream-container">
-        <img
-          src={product.image}
-          alt={product.name}
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-          loading="lazy"
-        />
-        {variant === 'featured' && (
-          <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
-        )}
-        {badge && (
-          <span className="absolute top-3 left-3 z-10 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-terracotta text-cream px-2 py-1 text-[10px] font-semibold tracking-wide uppercase shadow-sm">
-            {badge}
-          </span>
-        )}
-        {isSale && (
-          <span className="absolute top-3 right-3 z-10 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-safari-honey text-ink px-2 py-1 text-[10px] font-semibold tracking-wide uppercase shadow-sm">
-            Sale
-          </span>
-        )}
-        <button
-          onClick={(e) => {
-            e.stopPropagation();
-            addItem(product);
-          }}
-          className="absolute bottom-2 left-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity"
-          aria-label={`Add ${product.name} to cart`}
-        >
-          <Plus size={14} strokeWidth={2} />
-        </button>
-      </div>
-      <div className="p-3">
-        <div className="flex items-baseline gap-2 mb-1">
-          <span className="text-[10px] font-medium text-soft mono tracking-wide uppercase">
-            {product.categoryLabel}
-          </span>
-          {product.comparePrice && (
-            <span className="text-[10px] text-error line-through">{formatPrice(product.comparePrice)}</span>
-          )}
-        </div>
-        <Link
-          to={`/shop/${product.id}`}
-          className="text-ink font-serif text-sm font-medium group-hover:text-safari-dark transition-colors"
-        >
-          {product.name}
+    <article className={`group ${variant === 'featured' ? 'card' : ''}`}>
+      <div className="relative aspect-[.88] overflow-hidden rounded-[1.25rem] bg-oat-deep">
+        <Link to={`/shop/${product.id}`} aria-label={`View ${product.name}`}>
+          <img src={product.image} alt={product.name} className="h-full w-full object-cover transition duration-500 ease-out group-hover:scale-105" loading="lazy" />
         </Link>
-        <p className="text-[11px] text-soft mt-1 line-clamp-2">{product.shortDescription}</p>
-        <div className="flex items-baseline justify-between mt-3 pt-2 border-t border-line">
-          <span className="font-bold text-ink">{formatPrice(product.price)}</span>
-          <span className="text-[10px] text-soft mono">{product.weight}</span>
-        </div>
+        <div className="absolute inset-x-3 top-3 flex items-start justify-between gap-2"><div>{badge && <span className="inline-flex rounded-full bg-paper px-2.5 py-1 font-mono text-[9px] uppercase tracking-[.1em] text-copper shadow-card">{badge}</span>}</div>{product.comparePrice && <span className="rounded-full bg-copper px-2.5 py-1 font-mono text-[9px] uppercase tracking-[.1em] text-white shadow-card">Sale</span>}</div>
+        <button onClick={() => addItem(product)} className="absolute bottom-3 right-3 flex h-10 w-10 translate-y-2 items-center justify-center rounded-full bg-espresso text-oat opacity-0 shadow-lift transition duration-200 group-hover:translate-y-0 group-hover:opacity-100 hover:bg-copper" aria-label={`Add ${product.name} to bag`}><Plus size={18} /></button>
       </div>
+      <div className="px-1 pt-4"><div className="flex items-center justify-between gap-3"><span className="font-mono text-[9px] uppercase tracking-[.13em] text-copper">{product.categoryLabel}</span>{product.weight && <span className="font-mono text-[9px] text-espresso/40">{product.weight}</span>}</div><Link to={`/shop/${product.id}`} className="mt-2 flex items-start justify-between gap-2"><h3 className="text-lg font-semibold leading-tight text-espresso transition-colors group-hover:text-copper sm:text-xl">{product.name}</h3><ArrowUpRight size={16} className="mt-1 shrink-0 text-espresso/30 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-copper" /></Link><p className="mt-2 line-clamp-2 text-xs leading-5 text-espresso/55">{product.shortDescription}</p><div className="mt-3 flex items-center gap-2"><span className="font-semibold text-espresso">{formatPrice(product.price)}</span>{product.comparePrice && <span className="text-xs text-espresso/35 line-through">{formatPrice(product.comparePrice)}</span>}</div></div>
     </article>
   );
 }

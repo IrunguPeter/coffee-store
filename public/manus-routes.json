@@ -1,0 +1,1 @@
+{"routes":[{"path":"/","title":"E-Shop Kenya"},{"path":"/shop","title":"Shop the collection"},{"path":"/shop/:id","title":"Product detail"},{"path":"/checkout","title":"Checkout"},{"path":"/admin","title":"Store admin"}]}
