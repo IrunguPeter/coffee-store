@@ -1,158 +1,21 @@
 import { useState, useEffect } from 'react';
-import { getOrders, getOrderStats } from '../../data/orders';
+import { ArrowUpRight, RefreshCw } from 'lucide-react';
+import { getOrders, getOrderStats, type OrderStats } from '../../data/orders';
 import { formatPrice } from '../../lib/utils';
 
+type AdminOrder = { id: string; order_number: string; customer_name: string; customer_email: string; total: number; status: string; payment_method: string; created_at: string };
+
+const statusStyles: Record<string, string> = { pending: 'bg-savanna-honey/15 text-savanna-honey-dim', paid: 'bg-sage/10 text-sage', fulfilled: 'bg-mpesa/10 text-mpesa', shipped: 'bg-copper/10 text-copper', cancelled: 'bg-error/10 text-error' };
+
 export default function StatsTab() {
-  const [orders, setOrders] = useState<any[]>([]);
-  const [stats, setStats] = useState<any>(null);
+  const [orders, setOrders] = useState<AdminOrder[]>([]);
+  const [stats, setStats] = useState<OrderStats | null>(null);
   const [loading, setLoading] = useState(true);
+  const loadData = async () => { setLoading(true); try { const [ordersData, statsData] = await Promise.all([getOrders(), getOrderStats()]); setOrders(ordersData as unknown as AdminOrder[]); setStats(statsData); } catch { setOrders([]); setStats(null); } finally { setLoading(false); } };
+  useEffect(() => { loadData(); }, []);
+  if (loading) return <div className="flex items-center gap-3 py-12 text-sm text-espresso/55"><RefreshCw size={16} className="animate-spin text-copper" /> Loading store activity…</div>;
 
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  const loadData = async () => {
-    setLoading(true);
-    try {
-      const [ordersData, statsData] = await Promise.all([getOrders(), getOrderStats()]);
-      setOrders(ordersData);
-      setStats(statsData);
-    } catch {
-      setOrders([]);
-      setStats(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) return <p className="text-soft">Loading stats...</p>;
-
-  const colorMap: Record<string, string> = {
-    pending: 'text-savanna-honey',
-    paid: 'text-safari',
-    fulfilled: 'text-[#00B04F]',
-    shipped: 'text-safari-dark',
-    cancelled: 'text-error',
-  };
-
-  return (
-    <div className="space-y-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
-        <h2 className="font-serif text-2xl font-bold text-ink">Recent orders</h2>
-        <button
-          onClick={loadData}
-          className="btn-ghost flex items-center gap-2"
-        >
-          Refresh
-        </button>
-      </div>
-
-      <div className="overflow-x-auto border border-line rounded-lg">
-        <table className="w-full text-left">
-          <thead>
-            <tr className="border-b border-line bg-cream/50">
-              <th className="text-xs mono tracking-wide uppercase text-soft p-4">Order</th>
-              <th className="text-xs mono tracking-wide uppercase text-soft p-4">Customer</th>
-              <th className="text-xs mono tracking-wide uppercase text-soft p-4 text-right">Total</th>
-              <th className="text-xs mono tracking-wide uppercase text-soft p-4 text-center">Status</th>
-              <th className="text-xs mono tracking-wide uppercase text-soft p-4 text-center">Date</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-line">
-            {orders.slice(0, 10).map((order: any) => (
-              <tr key={order.id} className="hover:bg-safari/5 transition-colors">
-                <td className="p-4">
-                  <div className="text-sm font-medium text-ink">{order.order_number}</div>
-                  <div className="text-[11px] text-soft mono">{order.payment_method === 'mpesa' ? 'M-Pesa' : 'Card'}</div>
-                </td>
-                <td className="p-4">
-                  <div className="text-sm font-medium text-ink">{order.customer_name}</div>
-                  <div className="text-[11px] text-soft mono">{order.customer_email}</div>
-                </td>
-                <td className="p-4 text-sm font-medium text-ink text-right">{formatPrice(order.total)}</td>
-                <td className="p-4 text-center">
-                  <span className={`text-xs font-medium px-2 py-1 rounded-full border ${colorMap[order.status]} border-[color:currentColor]`}>
-                    {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
-                  </span>
-                </td>
-                <td className="p-4 text-sm text-soft text-center">
-                  {new Date(order.created_at).toLocaleDateString()}
-                </td>
-              </tr>
-            ))}
-            {orders.length === 0 && (
-              <tr>
-                <td colSpan={5} className="p-8 text-center text-soft">
-                  No orders yet.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      {stats && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-          <div className="card p-6">
-            <h3 className="font-serif text-lg font-bold text-ink mb-4">Sales summary</h3>
-            <div className="space-y-3">
-              <div className="flex justify-between text-sm">
-                <span className="text-soft">Total orders</span>
-                <span className="text-ink">{stats.totalOrders}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-soft">Total sales</span>
-                <span className="text-ink font-medium">{formatPrice(stats.totalSales)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-soft">Average order value</span>
-                <span className="text-ink font-medium">{formatPrice(stats.averageOrderValue)}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-soft">Pending orders</span>
-                <span className="text-soft text-savanna-honey">{stats.pendingOrders}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-soft">Fulfilled orders</span>
-                <span className="text-soft text-[#00B04F]">{stats.fulfilledOrders}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="card p-6">
-            <h3 className="font-serif text-lg font-bold text-ink mb-4">How it works</h3>
-            <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-safari/10 flex items-center justify-center text-safari text-xs font-bold">
-                  1
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-ink">Customer places order</div>
-                  <div className="text-[11px] text-soft">Via E-shop website with M-Pesa</div>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-safari/10 flex items-center justify-center text-safari text-xs font-bold">
-                  2
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-ink">STK push sent</div>
-                  <div className="text-[11px] text-soft">Customer enters M-Pesa PIN</div>
-                </div>
-              </div>
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-safari/10 flex items-center justify-center text-safari text-xs font-bold">
-                  3
-                </div>
-                <div>
-                  <div className="text-sm font-medium text-ink">Order confirmed</div>
-                  <div className="text-[11px] text-soft">Invoice generated &amp; order packed</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
+  return <div className="space-y-8"><div className="flex items-center justify-between gap-4"><div><p className="font-mono text-[9px] uppercase tracking-[.14em] text-copper">Live activity</p><h2 className="mt-2 text-2xl font-semibold">Recent orders</h2></div><button onClick={loadData} className="btn-ghost"><RefreshCw size={15} /> Refresh</button></div><div className="overflow-x-auto"><table className="w-full min-w-[680px] text-left"><thead><tr className="border-b border-espresso/10 font-mono text-[9px] uppercase tracking-[.12em] text-espresso/45"><th className="pb-3 pl-1">Order</th><th className="pb-3">Customer</th><th className="pb-3 text-right">Total</th><th className="pb-3 text-center">Status</th><th className="pb-3 text-right">Date</th></tr></thead><tbody className="divide-y divide-espresso/10">{orders.slice(0, 8).map((order) => <tr key={order.id} className="group transition-colors hover:bg-oat/50"><td className="py-4 pl-1"><p className="font-mono text-xs font-medium text-espresso">{order.order_number}</p><p className="mt-1 text-[10px] text-espresso/40">{order.payment_method === 'mpesa' ? 'M-Pesa' : 'Card'}</p></td><td className="py-4"><p className="text-sm font-medium text-espresso">{order.customer_name}</p><p className="mt-1 text-[10px] text-espresso/45">{order.customer_email}</p></td><td className="py-4 text-right text-sm font-semibold text-espresso">{formatPrice(order.total)}</td><td className="py-4 text-center"><span className={`rounded-full px-2.5 py-1 font-mono text-[9px] uppercase tracking-[.08em] ${statusStyles[order.status] ?? 'bg-espresso/10 text-espresso/60'}`}>{order.status}</span></td><td className="py-4 text-right font-mono text-[10px] text-espresso/45">{new Date(order.created_at).toLocaleDateString()}</td></tr>)}{orders.length === 0 && <tr><td colSpan={5} className="py-12 text-center text-sm text-espresso/50">No orders yet.</td></tr>}</tbody></table></div>{stats && <div className="grid gap-4 border-t border-espresso/10 pt-6 sm:grid-cols-3"><Summary label="Average order" value={formatPrice(stats.averageOrderValue)} /><Summary label="Total sales" value={formatPrice(stats.totalSales)} /><Summary label="Fulfilment rate" value={`${stats.totalOrders ? Math.round((stats.fulfilledOrders / stats.totalOrders) * 100) : 0}%`} /></div>}<div className="grid gap-3 border-t border-espresso/10 pt-6 sm:grid-cols-3"><FlowStep number="01" title="Order placed" detail="Customer completes checkout" /><FlowStep number="02" title="Payment verified" detail="M-Pesa or card confirmation" /><FlowStep number="03" title="Packed & sent" detail="Team updates fulfilment status" /></div></div>;
 }
+function Summary({ label, value }: { label: string; value: string }) { return <div className="rounded-xl bg-oat p-4"><p className="font-mono text-[9px] uppercase tracking-[.12em] text-espresso/45">{label}</p><p className="mt-2 text-xl font-semibold text-espresso">{value}</p></div>; }
+function FlowStep({ number, title, detail }: { number: string; title: string; detail: string }) { return <div className="flex gap-3 rounded-xl border border-espresso/10 p-4"><span className="font-mono text-[10px] text-copper">{number}</span><div><p className="text-sm font-semibold">{title}</p><p className="mt-1 text-[11px] text-espresso/50">{detail}</p></div><ArrowUpRight size={15} className="ml-auto text-espresso/25" /></div>; }
