@@ -46,7 +46,7 @@ export default function ProductGrid() {
           <button
             onClick={() => setView('grid')}
             className={`p-2 rounded-sm transition-colors ${
-              view === 'grid' ? 'bg-coffee text-cream-soft' : 'text-soft hover:text-ink'
+              view === 'grid' ? 'bg-safari text-cream' : 'text-soft hover:text-ink'
             }`}
             aria-label="Grid view"
           >
@@ -55,7 +55,7 @@ export default function ProductGrid() {
           <button
             onClick={() => setView('list')}
             className={`p-2 rounded-sm transition-colors ${
-              view === 'list' ? 'bg-coffee text-cream-soft' : 'text-soft hover:text-ink'
+              view === 'list' ? 'bg-safari text-cream' : 'text-soft hover:text-ink'
             }`}
             aria-label="List view"
           >

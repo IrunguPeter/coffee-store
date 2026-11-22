@@ -17,7 +17,7 @@ export default function ProductCard({ product, variant = 'default' }: ProductCar
 
   return (
     <article className="card group cursor-pointer">
-      <div className="relative overflow-hidden aspect-[4/3] bg-coffee-pale">
+      <div className="relative overflow-hidden aspect-[4/3] bg-cream-container">
         <img
           src={product.image}
           alt={product.name}
@@ -59,7 +59,7 @@ export default function ProductCard({ product, variant = 'default' }: ProductCar
         </div>
         <Link
           to={`/shop/${product.id}`}
-          className="text-ink font-serif text-sm font-medium group-hover:text-coffee-dark transition-colors"
+          className="text-ink font-serif text-sm font-medium group-hover:text-safari-dark transition-colors"
         >
           {product.name}
         </Link>

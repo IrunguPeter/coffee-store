@@ -30,7 +30,7 @@ export default function ProductDetail() {
         <div className="lg:grid lg:grid-cols-2 lg:gap-12">
           {/* Images */}
           <div className="space-y-4">
-            <div className="relative aspect-[4/5] overflow-hidden rounded-lg border border-line bg-coffee-pale shadow-sm">
+            <div className="relative aspect-[4/5] overflow-hidden rounded-lg border border-line bg-cream-container shadow-sm">
               <img
                 src={product.image}
                 alt={product.name}
@@ -39,7 +39,7 @@ export default function ProductDetail() {
             </div>
             <div className="grid grid-cols-4 gap-2">
               {[0, 1, 2, 3].map((i) => (
-                <div key={i} className="aspect-square overflow-hidden rounded-md border border-line bg-coffee-pale cursor-pointer hover:border-coffee/50 transition-colors">
+                <div key={i} className="aspect-square overflow-hidden rounded-md border border-line bg-cream-container cursor-pointer hover:border-safari/50 transition-colors">
                   <img src={product.image} alt="" className="w-full h-full object-cover" />
                 </div>
               ))}

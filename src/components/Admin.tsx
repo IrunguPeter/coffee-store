@@ -113,10 +113,10 @@ export default function Admin() {
           </thead>
           <tbody className="divide-y divide-line">
             {products.map((product) => (
-              <tr key={product.id} className="hover:bg-coffee/5 transition-colors">
+              <tr key={product.id} className="hover:bg-safari/5 transition-colors">
                 <td className="p-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded overflow-hidden bg-coffee-pale">
+                    <div className="w-10 h-10 rounded overflow-hidden bg-cream-container">
                       <img src={product.image} alt="" className="w-full h-full object-cover" />
                     </div>
                     <div>
@@ -129,7 +129,7 @@ export default function Admin() {
                 <td className="p-4 text-sm text-ink font-medium text-right">{formatPrice(product.price)}</td>
                 <td className="p-4 text-sm text-soft text-center">{product.stock}</td>
                 <td className="p-4 text-right">
-                  <button onClick={() => handleEdit(product)} className="text-xs text-coffee underline underline-offset-2 hover:text-coffee-dark">Edit</button>
+                  <button onClick={() => handleEdit(product)} className="text-xs text-safari underline underline-offset-2 hover:text-safari-dark">Edit</button>
                   <button onClick={() => handleDelete(product.id)} className="ml-3 text-xs text-error underline underline-offset-2 hover:text-error">Delete</button>
                 </td>
               </tr>
@@ -138,7 +138,7 @@ export default function Admin() {
         </table>
       </div>
 
-      <div className="mt-8 p-6 rounded-lg bg-coffee/5 border border-coffee/10">
+      <div className="mt-8 p-6 rounded-lg bg-safari/5 border border-safari/10">
         <div className="flex items-center gap-3 mb-3">
           <ShieldCheck size={18} strokeWidth={2} className="text-safari" />
           <span className="text-sm font-medium text-ink">Admin notes</span>

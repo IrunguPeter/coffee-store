@@ -13,8 +13,8 @@ export default function Navbar() {
       <div className="page-width">
         <div className="flex items-center justify-between h-16">
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-full bg-coffee flex items-center justify-center">
-              <span className="text-[10px] text-cream-soft font-bold">☕</span>
+            <div className="w-8 h-8 rounded-full bg-safari flex items-center justify-center">
+              <span className="text-[10px] text-cream font-bold">☕</span>
             </div>
             <span className="font-serif text-xl font-bold tracking-tight text-ink">
               ZAWADI
@@ -33,13 +33,13 @@ export default function Navbar() {
           <div className="flex items-center gap-3">
             <button
               onClick={toggleCart}
-              className="relative p-2 text-ink hover:text-coffee-dark transition-colors"
+              className="relative p-2 text-ink hover:text-safari-dark transition-colors"
               aria-label={`Cart (${itemCount} items)`}
             >
               <ShoppingCart size={20} strokeWidth={2} />
               {itemCount > 0 && (
                 <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center">
-                  <span className="w-full h-full rounded-full bg-coffee-dark text-[10px] text-cream-soft font-bold leading-none">
+                  <span className="w-full h-full rounded-full bg-safari-dark text-[10px] text-cream font-bold leading-none">
                     {itemCount}
                   </span>
                 </span>
@@ -47,7 +47,7 @@ export default function Navbar() {
             </button>
             <button
               onClick={() => setMenuOpen(!menuOpen)}
-              className="md:hidden p-2 text-ink hover:text-coffee-dark transition-colors"
+              className="md:hidden p-2 text-ink hover:text-safari-dark transition-colors"
               aria-label="Open menu"
             >
               {menuOpen ? <X size={20} strokeWidth={2} /> : <Menu size={20} strokeWidth={2} />}

@@ -29,7 +29,9 @@
 
   /* Focus visible for accessibility */
   :focus-visible {
-    @apply outline-none ring-2 ring-safari/50 rounded-sm ring-offset-2 ring-offset-cream;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(46, 94, 30, 0.5), 0 0 0 4px rgb(252 249 248);
+    border-radius: 4px;
   }
 
   /* Custom scrollbar thin */
