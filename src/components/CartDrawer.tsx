@@ -5,9 +5,11 @@ import type { Product } from '../data/products';
 import { formatPrice, cn } from '../lib/utils';
 
 export default function CartDrawer() {
-  const { items, subtotal, itemCount, removeItem, updateQuantity, clearCart, closeCart } =
+  const { items, subtotal, itemCount, removeItem, updateQuantity, clearCart, closeCart, isOpen } =
     useCart();
   const [checkoutStep, setCheckoutStep] = useState<'cart' | 'checkout' | 'success'>('cart');
+
+  if (!isOpen) return null;
 
   if (checkoutStep === 'checkout') {
     return <CheckoutPanel onBack={() => setCheckoutStep('cart')} />;
