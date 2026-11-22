@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, CheckCircle, ChevronLeft, ArrowRight, CoffeeBeans } from 'lucide-react';
+import { X, CheckCircle, ChevronLeft, ArrowRight, Coffee } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import type { Product } from '../data/products';
 import { formatPrice, cn } from '../lib/utils';
@@ -42,7 +42,7 @@ export default function CartDrawer() {
           {items.length === 0 ? (
             <div className="text-center py-10">
               <div className="w-16 h-16 rounded-full bg-coffee/10 flex items-center justify-center mx-auto mb-4">
-                <CoffeeBeans size={24} strokeWidth={2} />
+                <Coffee size={24} strokeWidth={2} />
               </div>
               <p className="text-soft">Your cart is empty.</p>
               <p className="text-xs text-soft mono tracking-wide uppercase mt-2">

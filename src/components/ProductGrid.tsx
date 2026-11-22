@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ProductCard from './ProductCard';
 import { PRODUCTS, CATEGORIES, getProductsByCategory, getFeaturedProducts } from '../data/products';
-import { SlidersHorizontal, Grid2Icon, List } from 'lucide-react';
+import { Layout, List } from 'lucide-react';
 
 export default function ProductGrid() {
   const location = useLocation();
@@ -50,7 +50,7 @@ export default function ProductGrid() {
             }`}
             aria-label="Grid view"
           >
-            <Grid2Icon size={18} strokeWidth={2} />
+            <Layout size={18} strokeWidth={2} />
           </button>
           <button
             onClick={() => setView('list')}

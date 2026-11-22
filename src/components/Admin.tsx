@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Plus, Upload, Trash2, CoffeeBeans, ShieldCheck } from 'lucide-react';
+import { Plus, Upload, Trash2, ShieldCheck } from 'lucide-react';
 import type { Product } from '../data/products';
 import { PRODUCTS, CATEGORIES, getProduct } from '../data/products';
 import { formatPrice, slugify } from '../lib/utils';

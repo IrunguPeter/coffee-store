@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Plus, Heart, CoffeeBeans } from 'lucide-react';
+import { Plus, Coffee } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import type { Product } from '../data/products';
 import { formatPrice, cn } from '../lib/utils';
@@ -29,7 +29,7 @@ export default function ProductCard({ product, variant = 'default' }: ProductCar
         )}
         {badge && (
           <span className="absolute top-3 left-3 z-10 inline-flex items-center gap-1 px-2 py-1 rounded-md bg-ink text-cream-soft text-[10px] font-bold tracking-wide uppercase shadow-sm">
-            <CoffeeBeans size={10} strokeWidth={2} />
+            <Coffee size={10} strokeWidth={2} />
             {badge}
           </span>
         )}
