@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Plus, Coffee } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import type { Product } from '../data/products';
 import { formatPrice, cn } from '../lib/utils';
@@ -28,13 +28,12 @@ export default function ProductCard({ product, variant = 'default' }: ProductCar
           <div className="absolute inset-0 bg-black/20 group-hover:bg-black/10 transition-colors" />
         )}
         {badge && (
-          <span className="absolute top-3 left-3 z-10 inline-flex items-center gap-1 px-2 py-1 rounded-md bg-ink text-cream-soft text-[10px] font-bold tracking-wide uppercase shadow-sm">
-            <Coffee size={10} strokeWidth={2} />
+          <span className="absolute top-3 left-3 z-10 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-terracotta text-cream px-2 py-1 text-[10px] font-semibold tracking-wide uppercase shadow-sm">
             {badge}
           </span>
         )}
         {isSale && (
-          <span className="absolute top-3 right-3 z-10 inline-flex items-center gap-1 px-2 py-1 rounded-md bg-amber-dark text-cream-soft text-[10px] font-bold tracking-wide uppercase shadow-sm">
+          <span className="absolute top-3 right-3 z-10 inline-flex items-center gap-1 px-2 py-1 rounded-full bg-safari-honey text-ink px-2 py-1 text-[10px] font-semibold tracking-wide uppercase shadow-sm">
             Sale
           </span>
         )}

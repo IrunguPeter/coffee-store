@@ -140,7 +140,7 @@ export default function Admin() {
 
       <div className="mt-8 p-6 rounded-lg bg-coffee/5 border border-coffee/10">
         <div className="flex items-center gap-3 mb-3">
-          <ShieldCheck size={18} strokeWidth={2} className="text-coffee" />
+          <ShieldCheck size={18} strokeWidth={2} className="text-safari" />
           <span className="text-sm font-medium text-ink">Admin notes</span>
         </div>
         <p className="text-sm text-soft">

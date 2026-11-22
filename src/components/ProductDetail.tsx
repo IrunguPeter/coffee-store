@@ -72,12 +72,12 @@ export default function ProductDetail() {
               </div>
               <div className="flex items-center gap-2">
                 {product.bestseller && (
-                  <span className="px-3 py-1 rounded-full bg-coffee text-cream-soft text-[10px] font-bold tracking-wide uppercase">
+                  <span className="px-3 py-1 rounded-full bg-terracotta text-cream text-[10px] font-semibold tracking-wide uppercase">
                     Bestseller
                   </span>
                 )}
                 {product.new && (
-                  <span className="px-3 py-1 rounded-full bg-line text-ink text-[10px] font-bold tracking-wide uppercase">
+                  <span className="px-3 py-1 rounded-full bg-outline text-ink text-[10px] font-semibold tracking-wide uppercase">
                     New
                   </span>
                 )}
@@ -95,14 +95,14 @@ export default function ProductDetail() {
                 <div className="flex items-center gap-2 border border-line rounded-md">
                   <button
                     onClick={() => setQuantity((q) => Math.max(1, q - 1))}
-                    className="w-10 h-10 flex items-center justify-center text-ink hover:bg-coffee hover:text-cream-soft transition-colors"
+                    className="w-10 h-10 flex items-center justify-center text-ink hover:bg-safari hover:text-cream transition-colors"
                   >
                     −
                   </button>
                   <span className="w-6 text-center text-sm font-medium text-ink">{quantity}</span>
                   <button
                     onClick={() => setQuantity((q) => q + 1)}
-                    className="w-10 h-10 flex items-center justify-center text-ink hover:bg-coffee hover:text-cream-soft transition-colors"
+                    className="w-10 h-10 flex items-center justify-center text-ink hover:bg-safari hover:text-cream transition-colors"
                   >
                     +
                   </button>
@@ -113,7 +113,7 @@ export default function ProductDetail() {
                 onClick={() => addItem(product, quantity)}
                 className="w-full btn-primary py-4 text-base"
               >
-                Add to cart
+                Add to bag
               </button>
             </div>
           </div>

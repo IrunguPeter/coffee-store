@@ -16,8 +16,8 @@ export default function Navbar() {
             <div className="w-8 h-8 rounded-full bg-coffee flex items-center justify-center">
               <span className="text-[10px] text-cream-soft font-bold">☕</span>
             </div>
-            <span className="font-display text-xl font-bold tracking-tight text-ink">
-              SHELF &amp; CO.
+            <span className="font-serif text-xl font-bold tracking-tight text-ink">
+              ZAWADI
             </span>
           </Link>
 

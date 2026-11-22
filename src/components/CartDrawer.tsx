@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, CheckCircle, ChevronLeft, ArrowRight, Coffee } from 'lucide-react';
+import { X, CheckCircle, ChevronLeft, ArrowRight } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import type { Product } from '../data/products';
 import { formatPrice, cn } from '../lib/utils';
@@ -28,12 +28,12 @@ export default function CartDrawer() {
       />
 
       {/* Panel */}
-      <div className="relative w-full max-w-md bg-cream border-l border-line shadow-lift flex flex-col h-full">
-        <div className="p-6 border-b border-line flex items-center justify-between">
-          <h2 className="font-serif text-lg font-bold text-ink">Your cart</h2>
+      <div className="relative w-full max-w-md bg-cream border-l border-outline shadow-lift flex flex-col h-full">
+        <div className="p-6 border-b border-outline flex items-center justify-between">
+          <h2 className="text-lg font-bold text-ink">Your cart</h2>
           <button
             onClick={closeCart}
-            className="p-2 text-soft hover:text-ink transition-colors"
+            className="p-2 text-ink-variant hover:text-ink transition-colors"
             aria-label="Close cart"
           >
             <X size={20} strokeWidth={2} />
@@ -43,8 +43,13 @@ export default function CartDrawer() {
         <div className="flex-1 overflow-y-auto p-6">
           {items.length === 0 ? (
             <div className="text-center py-10">
-              <div className="w-16 h-16 rounded-full bg-coffee/10 flex items-center justify-center mx-auto mb-4">
-                <Coffee size={24} strokeWidth={2} />
+              <div className="w-16 h-16 rounded-full bg-safari/10 flex items-center justify-center mx-auto mb-4">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M17.5 18.5v-10A1.5 1.5 0 0 0 16 7h-4a1.5 1.5 0 0 0-1.5 1.5v17" />
+                  <path d="M3.5 18.5v-10A1.5 1.5 0 0 1 5 7h14a1.5 1.5 0 0 1 1.5 1.5v10" />
+                  <line x1="6" x2="18" y1="6" y2="6" />
+                  <line x1="6" x2="18" y1="18" y2="18" />
+                </svg>
               </div>
               <p className="text-soft">Your cart is empty.</p>
               <p className="text-xs text-soft mono tracking-wide uppercase mt-2">
@@ -65,10 +70,10 @@ export default function CartDrawer() {
           )}
         </div>
 
-        <div className="p-6 border-t border-line bg-cream/60">
+        <div className="p-6 border-t border-outline bg-cream-low">
           <div className="flex items-baseline justify-between mb-6">
-            <span className="text-sm mono tracking-wide uppercase text-soft">Subtotal</span>
-            <span className="font-serif text-lg font-bold text-ink">{formatPrice(subtotal)}</span>
+            <span className="text-xs mono tracking-wide uppercase text-ink-variant">Subtotal</span>
+            <span className="text-lg font-bold text-ink">{formatPrice(subtotal)}</span>
           </div>
 
           <div className="space-y-3">
@@ -99,19 +104,21 @@ function CartItemRow({ item, onRemove, onChange }: { item: ReturnType<typeof use
   const { product, quantity } = item;
   return (
     <div className="flex gap-4">
-      <div className="relative w-20 h-20 flex-shrink-0 overflow-hidden rounded-md bg-coffee-pale">
+      <div className="relative w-20 h-20 flex-shrink-0 overflow-hidden rounded-md bg-savanna-container">
         <img src={product.image} alt={product.name} className="w-full h-full object-cover" loading="lazy" />
       </div>
       <div className="flex-1">
         <div className="flex items-baseline justify-between mb-1">
-          <span className="font-serif text-sm font-medium text-ink">{product.name}</span>
+          <span className="text-sm font-medium text-ink">{product.name}</span>
           <span className="text-xs text-soft mono">{formatPrice(product.price)}</span>
         </div>
-        <div className="text-xs text-soft mono mb-3">{product.weight}</div>
+        {product.weight && (
+          <div className="text-[11px] text-soft mono mb-3">{product.weight}</div>
+        )}
         <div className="flex items-center gap-3">
           <button
             onClick={() => onChange(quantity - 1)}
-            className="w-8 h-8 rounded-md border border-line bg-cream text-ink text-xs font-bold flex items-center justify-center hover:bg-coffee hover:text-cream-soft transition-colors"
+            className="w-8 h-8 rounded-md border border-outline bg-cream text-ink text-xs font-bold flex items-center justify-center hover:bg-safari hover:text-cream transition-colors"
             aria-label="Decrease quantity"
           >
             −
@@ -119,7 +126,7 @@ function CartItemRow({ item, onRemove, onChange }: { item: ReturnType<typeof use
           <span className="text-xs font-medium text-ink w-4 text-center">{quantity}</span>
           <button
             onClick={() => onChange(quantity + 1)}
-            className="w-8 h-8 rounded-md border border-line bg-cream text-ink text-xs font-bold flex items-center justify-center hover:bg-coffee hover:text-cream-soft transition-colors"
+            className="w-8 h-8 rounded-md border border-outline bg-cream text-ink text-xs font-bold flex items-center justify-center hover:bg-safari hover:text-cream transition-colors"
             aria-label="Increase quantity"
           >
             +
@@ -146,11 +153,11 @@ function CheckoutPanel({ onBack }: { onBack: () => void }) {
       <div className="flex items-center gap-3 mb-6">
         <button
           onClick={onBack}
-          className="p-2 text-soft hover:text-ink transition-colors"
+          className="p-2 text-ink-variant hover:text-ink transition-colors"
         >
           <ChevronLeft size={20} strokeWidth={2} />
         </button>
-        <h2 className="font-serif text-lg font-bold text-ink">Checkout</h2>
+        <h2 className="text-lg font-bold text-ink">Checkout</h2>
       </div>
 
       <div className="space-y-4 mb-6">
@@ -164,15 +171,15 @@ function CheckoutPanel({ onBack }: { onBack: () => void }) {
             placeholder="you@example.com"
           />
         </div>
-        <div className="p-3 rounded-md bg-coffee/5 border border-coffee/10">
-          <p className="text-xs text-soft mono mb-2">Order summary</p>
+        <div className="p-3 rounded-md bg-safari/5 border border-safari/10">
+          <p className="text-[10px] text-soft mono mb-2 tracking-wide uppercase">Order summary</p>
           {items.map((item) => (
             <div className="flex justify-between text-xs mb-1" key={item.product.id}>
               <span className="text-soft">{item.product.name} × {item.quantity}</span>
               <span className="text-ink">{formatPrice(item.product.price * item.quantity)}</span>
             </div>
           ))}
-          <div className="flex justify-between mt-2 pt-2 border-t border-line text-sm font-medium text-ink">
+          <div className="flex justify-between mt-2 pt-2 border-t border-outline text-sm font-medium text-ink">
             <span>Total</span>
             <span>{formatPrice(subtotal)}</span>
           </div>
@@ -187,10 +194,10 @@ function CheckoutPanel({ onBack }: { onBack: () => void }) {
         disabled={!email || items.length === 0}
         className="w-full btn-primary"
       >
-        Place order
+        Place order via M-Pesa
       </button>
-      <p className="text-xs text-soft text-center mt-4">
-        Secure checkout. No card details stored.
+      <p className="text-[11px] text-soft text-center mt-4">
+        Secure checkout via Lipa na M-Pesa. No card details stored.
       </p>
     </div>
   );
@@ -199,11 +206,11 @@ function CheckoutPanel({ onBack }: { onBack: () => void }) {
 function SuccessPanel({ onBack }: { onBack: () => void }) {
   return (
     <div className="p-6 text-center">
-      <div className="w-16 h-16 rounded-full bg-success/10 flex items-center justify-center mx-auto mb-4">
-        <CheckCircle size={24} strokeWidth={2} className="text-success" />
+      <div className="w-16 h-16 rounded-full bg-[#00B04F]/10 flex items-center justify-center mx-auto mb-4">
+        <CheckCircle size={24} strokeWidth={2} className="text-[#00B04F]" />
       </div>
-      <h2 className="font-serif text-lg font-bold text-ink mb-2">Order placed!</h2>
-      <p className="text-soft mb-6">Your coffee is on its way. Thanks for supporting the roast.</p>
+      <h2 className="text-lg font-bold text-ink mb-2">Order placed!</h2>
+      <p className="text-soft mb-6">Thank you for supporting Kenyan artisans. Your order is being packed.</p>
       <button
         onClick={onBack}
         className="w-full btn-outline"
