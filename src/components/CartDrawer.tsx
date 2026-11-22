@@ -1,8 +1,7 @@
 import { useState } from 'react';
 import { X, CheckCircle, ChevronLeft, ArrowRight } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import type { Product } from '../data/products';
-import { formatPrice, cn } from '../lib/utils';
+import { formatPrice } from '../lib/utils';
 
 export default function CartDrawer() {
   const {
@@ -10,7 +9,6 @@ export default function CartDrawer() {
     subtotal,
     discount,
     total,
-    itemCount,
     removeItem,
     updateQuantity,
     clearCart,
@@ -212,7 +210,7 @@ function CartItemRow({ item, onRemove, onChange }: { item: ReturnType<typeof use
 }
 
 function CheckoutPanel({ onBack }: { onBack: () => void }) {
-  const { items, subtotal, discount, total, clearCart, closeCart } = useCart();
+  const { items, discount, total, clearCart, closeCart } = useCart();
   const [email, setEmail] = useState('');
 
   return (

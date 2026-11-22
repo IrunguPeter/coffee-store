@@ -1,8 +1,7 @@
 import { useState } from 'react';
-import { Plus, Trash2, Clock } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import type { Promo, DiscountType } from '../../data/promos';
 import { usePromo } from '../../context/PromoContext';
-import { formatPrice, slugify } from '../../lib/utils';
 
 export default function PromosTab() {
   const { promos, loading, error, createPromo, updatePromo, deletePromo, togglePromo, refetch } =
@@ -30,7 +29,7 @@ export default function PromosTab() {
       maxUses: form.maxUses ? Number(form.maxUses) : undefined,
       usedCount: editing?.usedCount ?? 0,
       expiresAt: form.expiresAt || undefined,
-      active: form.active !== 'false',
+      active: form.active !== false,
       createdAt: editing?.createdAt || new Date().toISOString(),
     };
 
@@ -115,7 +114,7 @@ export default function PromosTab() {
             <AdminField label="Expires at (YYYY-MM-DD)" name="expiresAt" form={form} setForm={setForm} type="date" />
             <div className="flex items-center gap-3">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={form.active !== 'false'} onChange={(e) => setForm({ ...form, active: e.target.checked ? 'true' : 'false' })} />
+                <input type="checkbox" checked={form.active !== false} onChange={(e) => setForm({ ...form, active: e.target.checked })} />
                 Active
               </label>
             </div>
@@ -207,6 +206,7 @@ function AdminField({
   setForm: any;
   type?: string;
   options?: { value: string; label: string }[];
+  select?: boolean;
 }) {
   return (
     <div className="space-y-2">

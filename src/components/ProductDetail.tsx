@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { Mail, Clock, MapPin, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import type { Product } from '../data/products';
 import { getProduct } from '../data/products';
@@ -13,6 +13,7 @@ export default function ProductDetail() {
 
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
+  const [quantity, setQuantity] = useState(1);
 
   useEffect(() => {
     loadProduct();
@@ -22,7 +23,7 @@ export default function ProductDetail() {
     setLoading(true);
     try {
       const p = await getProduct(id ?? '');
-      setProduct(p);
+      setProduct(p ?? null);
     } catch {
       setProduct(null);
     } finally {
@@ -47,8 +48,6 @@ export default function ProductDetail() {
       </div>
     );
   }
-
-  const [quantity, setQuantity] = useState(1);
 
   return (
     <div className="section">

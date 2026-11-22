@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingCart, Menu, Search, X } from 'lucide-react';
+import { ShoppingCart, Menu, X } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { cn } from '../lib/utils';
 
@@ -22,9 +22,9 @@ export default function Navbar() {
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
-            <navLink to="/" label="Home" />
-            <navLink to="/shop" label="Shop" />
-            <navLink to="/about" label="About" />
+            <NavLink to="/" label="Home" />
+            <NavLink to="/shop" label="Shop" />
+            <NavLink to="/about" label="About" />
             <a href="#" className="text-sm mono tracking-wide uppercase text-soft hover:text-ink transition-colors">
               Wholesale
             </a>
@@ -57,9 +57,9 @@ export default function Navbar() {
 
         {menuOpen && (
           <div className="md:hidden border-t border-line pt-4 pb-6 space-y-3">
-            <navLink to="/" label="Home" mobile />
-            <navLink to="/shop" label="Shop" mobile />
-            <navLink to="/about" label="About" mobile />
+            <NavLink to="/" label="Home" mobile />
+            <NavLink to="/shop" label="Shop" mobile />
+            <NavLink to="/about" label="About" mobile />
             <a
               href="#"
               className="block text-sm mono tracking-wide uppercase text-soft hover:text-ink transition-colors py-2"
@@ -73,7 +73,7 @@ export default function Navbar() {
   );
 }
 
-function navLink({ to, label, mobile }: { to: string; label: string; mobile?: boolean }) {
+function NavLink({ to, label, mobile }: { to: string; label: string; mobile?: boolean }) {
   return (
     <Link
       to={to}

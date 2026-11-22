@@ -1,5 +1,13 @@
 export type OrderStatus = 'pending' | 'paid' | 'fulfilled' | 'shipped' | 'cancelled';
 
+export type OrderStats = {
+  totalOrders: number;
+  totalSales: number;
+  averageOrderValue: number;
+  pendingOrders: number;
+  fulfilledOrders: number;
+};
+
 export type OrderItem = {
   productId: string;
   name: string;
@@ -54,6 +62,6 @@ export async function updateOrderStatus(id: string, status: OrderStatus) {
   return api.updateOrderStatus(id, status);
 }
 
-export async function getOrderStats() {
+export async function getOrderStats(): Promise<OrderStats> {
   return api.getOrderStats();
 }

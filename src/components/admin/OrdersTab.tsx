@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CheckCircle, RefreshCw } from 'lucide-react';
+import { RefreshCw } from 'lucide-react';
 import type { OrderStatus } from '../../data/orders';
 import { getOrders, updateOrderStatus } from '../../data/orders';
 import { formatPrice } from '../../lib/utils';
@@ -152,7 +152,7 @@ export default function OrdersTab() {
               </thead>
               <tbody className="divide-y divide-line">
                 {orders.map((order: any) => {
-                  const statusOpt = STATUS_OPTIONS.find((s) => s.id === order.status);
+                  const statusOpt = STATUS_OPTIONS.find((s) => s.id === order.status) ?? STATUS_OPTIONS[0];
                   return (
                     <tr key={order.id} className="hover:bg-safari/5 transition-colors cursor-pointer" onClick={() => setViewingInvoice(order)}>
                       <td className="p-4">
@@ -226,7 +226,7 @@ export default function OrdersTab() {
           </thead>
           <tbody className="divide-y divide-line">
             {orders.map((order: any) => {
-              const statusOpt = STATUS_OPTIONS.find((s) => s.id === order.status);
+              const statusOpt = STATUS_OPTIONS.find((s) => s.id === order.status) ?? STATUS_OPTIONS[0];
               return (
                 <tr key={order.id} className="hover:bg-safari/5 transition-colors cursor-pointer" onClick={() => setViewingInvoice(order)}>
                   <td className="p-4">

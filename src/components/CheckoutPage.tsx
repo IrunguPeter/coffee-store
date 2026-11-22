@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Mail, Phone, MapPin, ArrowLeft, CheckCircle, Phone as PhoneIcon } from 'lucide-react';
+import { Mail, MapPin, ArrowLeft, CheckCircle, Phone as PhoneIcon } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { createOrder } from '../data/orders';
 import { formatPrice } from '../lib/utils';

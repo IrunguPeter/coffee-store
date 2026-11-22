@@ -63,7 +63,7 @@ export async function getNewArrivals(): Promise<Product[]> {
 }
 
 export async function searchProducts(query: string): Promise<Product[]> {
-  const all = await api.getProducts();
+  const all: Product[] = await api.getProducts();
   const q = query.toLowerCase();
   return all.filter(
     (p) =>

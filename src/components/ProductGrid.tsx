@@ -1,12 +1,11 @@
 import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import ProductCard from './ProductCard';
-import { getProductsByCategory, searchProducts } from '../data/products';
+import { getProducts, getProductsByCategory, searchProducts } from '../data/products';
 import { Layout, List } from 'lucide-react';
 
 export default function ProductGrid() {
   const location = useLocation();
-  const navigate = useNavigate();
   const searchParams = new URLSearchParams(location.search);
 
   const [products, setProducts] = useState<any[]>([]);
@@ -29,8 +28,7 @@ export default function ProductGrid() {
         const results = await getProductsByCategory(category);
         setProducts(results);
       } else {
-        const results = await getProductsByCategory('coffee');
-        // For "all", just fetch coffee as default; in production fetch all
+        const results = await getProducts();
         setProducts(results);
       }
     } catch {

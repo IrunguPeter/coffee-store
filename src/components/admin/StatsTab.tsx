@@ -82,7 +82,7 @@ export default function StatsTab() {
             ))}
             {orders.length === 0 && (
               <tr>
-                <td colSpan="5" className="p-8 text-center text-soft">
+                <td colSpan={5} className="p-8 text-center text-soft">
                   No orders yet.
                 </td>
               </tr>

@@ -1,6 +1,6 @@
-import { useState } from 'react';
-import { Layout, List, ShieldCheck, CreditCard, TrendingUp, Package } from 'lucide-react';
-import { getOrderStats } from '../data/orders';
+import { useEffect, useState } from 'react';
+import { Layout, ShieldCheck, CreditCard, TrendingUp, Package } from 'lucide-react';
+import { getOrderStats, type OrderStats } from '../data/orders';
 import { cn } from '../lib/utils';
 import ProductsTab from './admin/ProductsTab';
 import PromosTab from './admin/PromosTab';
@@ -12,7 +12,17 @@ type Tab = 'stats' | 'products' | 'promos' | 'orders';
 export default function Admin() {
   const [activeTab, setActiveTab] = useState<Tab>('stats');
 
-  const stats = getOrderStats();
+  const [stats, setStats] = useState<OrderStats>({
+    totalOrders: 0,
+    totalSales: 0,
+    averageOrderValue: 0,
+    pendingOrders: 0,
+    fulfilledOrders: 0,
+  });
+
+  useEffect(() => {
+    getOrderStats().then(setStats).catch(() => undefined);
+  }, []);
 
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: 'stats', label: 'Dashboard', icon: <TrendingUp size={20} strokeWidth={2} /> },
@@ -85,7 +95,7 @@ export default function Admin() {
       </div>
 
       {/* Tab content */}
-      {activeTab === 'stats' && <StatsTab stats={stats} />}
+      {activeTab === 'stats' && <StatsTab />}
       {activeTab === 'products' && <ProductsTab />}
       {activeTab === 'promos' && <PromosTab />}
       {activeTab === 'orders' && <OrdersTab />}

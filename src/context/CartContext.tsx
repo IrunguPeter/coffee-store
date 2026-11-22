@@ -1,4 +1,4 @@
-import { createContext, useContext, useCallback, useState, useMemo, useEffect } from 'react';
+import { createContext, useContext, useCallback, useState, useMemo } from 'react';
 import type { Product } from '../data/products';
 import type { Promo } from '../data/promos';
 import { getPromo, calculateDiscount, isPromoValid } from '../data/promos';

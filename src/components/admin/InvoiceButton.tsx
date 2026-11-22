@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Download, Mail } from 'lucide-react';
+import { Download } from 'lucide-react';
 import type { Order } from '../../data/orders';
 import { formatPrice } from '../../lib/utils';
 
@@ -13,7 +13,6 @@ export function InvoiceButton({ order }: { order: Order }) {
       const doc = new jsPDF();
 
       const pageWidth = doc.internal.pageSize.getWidth();
-      const pageHeight = doc.internal.pageSize.getHeight();
       const margin = 20;
 
       // Header
@@ -115,7 +114,7 @@ export function InvoiceButton({ order }: { order: Order }) {
       for (const t of totals) {
         doc.setFontSize(10);
         doc.setFont(t.color === 'bold' ? 'helvetica' : 'helvetica', t.color === 'bold' ? 'bold' : 'normal');
-        doc.setTextColor(t.color === 'safari' ? [46, 94, 30] : [27, 28, 28]);
+        doc.setTextColor(t.color === 'safari' ? 46 : 27, t.color === 'safari' ? 94 : 28, t.color === 'safari' ? 30 : 28);
         doc.text(t.label, totalsX, y);
         doc.text(t.value, totalsX + 60, y);
         y += 10;

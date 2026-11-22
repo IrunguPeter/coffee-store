@@ -55,7 +55,7 @@ export function isPromoValid(promo: Promo): boolean {
 
 export function calculateDiscount(
   promo: Promo,
-  subtotal: number,
+  _subtotal: number,
   applicableSubtotal: number,
 ): { discount: number; description: string } {
   if (!isPromoValid(promo)) return { discount: 0, description: '' };

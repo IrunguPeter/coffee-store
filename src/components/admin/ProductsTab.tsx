@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import type { Product } from '../../data/products';
 import { createProduct, updateProduct, deleteProduct, getProducts } from '../../data/products';
 import { formatPrice, slugify } from '../../lib/utils';
@@ -45,9 +45,9 @@ export default function ProductsTab() {
       categoryLabel: CATEGORIES.find((c) => c.id === form.category)?.label || form.category,
       image: form.image || '/products/placeholder.jpg',
       stock: Number(form.stock || 0),
-      featured: form.featured === 'true',
-      bestseller: form.bestseller === 'true',
-      new: form.new === 'true',
+      featured: Boolean(form.featured),
+      bestseller: Boolean(form.bestseller),
+      new: Boolean(form.new),
     };
 
     try {
@@ -105,15 +105,15 @@ export default function ProductsTab() {
             <AdminField label="Image URL" name="image" form={form} setForm={setForm} />
             <div className="flex items-center gap-3">
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={form.featured === 'true'} onChange={(e) => setForm({ ...form, featured: e.target.checked ? 'true' : 'false' })} />
+                <input type="checkbox" checked={Boolean(form.featured)} onChange={(e) => setForm({ ...form, featured: e.target.checked })} />
                 Featured
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={form.bestseller === 'true'} onChange={(e) => setForm({ ...form, bestseller: e.target.checked ? 'true' : 'false' })} />
+                <input type="checkbox" checked={Boolean(form.bestseller)} onChange={(e) => setForm({ ...form, bestseller: e.target.checked })} />
                 Bestseller
               </label>
               <label className="flex items-center gap-2 cursor-pointer">
-                <input type="checkbox" checked={form.new === 'true'} onChange={(e) => setForm({ ...form, new: e.target.checked ? 'true' : 'false' })} />
+                <input type="checkbox" checked={Boolean(form.new)} onChange={(e) => setForm({ ...form, new: e.target.checked })} />
                 New arrival
               </label>
             </div>
@@ -182,6 +182,7 @@ function AdminField({
   setForm: any;
   type?: string;
   options?: { value: string; label: string }[];
+  select?: boolean;
   textarea?: boolean;
 }) {
   return (
