@@ -17,11 +17,11 @@ export default function ProductCard({ product, variant = 'default' }: ProductCar
 
   return (
     <article className="card group cursor-pointer">
-      <div className="relative overflow-hidden aspect-[4/5] bg-coffee-pale">
+      <div className="relative overflow-hidden aspect-[4/3] bg-coffee-pale">
         <img
           src={product.image}
           alt={product.name}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           loading="lazy"
         />
         {variant === 'featured' && (
@@ -43,19 +43,19 @@ export default function ProductCard({ product, variant = 'default' }: ProductCar
             e.stopPropagation();
             addItem(product);
           }}
-          className="absolute bottom-3 left-3 right-3 z-10 opacity-0 group-hover:opacity-100 transition-opacity"
+          className="absolute bottom-2 left-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity"
           aria-label={`Add ${product.name} to cart`}
         >
-          <Plus size={16} strokeWidth={2} />
+          <Plus size={14} strokeWidth={2} />
         </button>
       </div>
-      <div className="p-4">
+      <div className="p-3">
         <div className="flex items-baseline gap-2 mb-1">
-          <span className="text-xs font-medium text-soft mono tracking-wide uppercase">
+          <span className="text-[10px] font-medium text-soft mono tracking-wide uppercase">
             {product.categoryLabel}
           </span>
           {product.comparePrice && (
-            <span className="text-xs text-error line-through">{formatPrice(product.comparePrice)}</span>
+            <span className="text-[10px] text-error line-through">{formatPrice(product.comparePrice)}</span>
           )}
         </div>
         <Link
@@ -64,10 +64,10 @@ export default function ProductCard({ product, variant = 'default' }: ProductCar
         >
           {product.name}
         </Link>
-        <p className="text-xs text-soft mt-1 line-clamp-2">{product.shortDescription}</p>
-        <div className="flex items-baseline justify-between mt-4 pt-3 border-t border-line">
+        <p className="text-[11px] text-soft mt-1 line-clamp-2">{product.shortDescription}</p>
+        <div className="flex items-baseline justify-between mt-3 pt-2 border-t border-line">
           <span className="font-bold text-ink">{formatPrice(product.price)}</span>
-          <span className="text-xs text-soft mono">{product.weight}</span>
+          <span className="text-[10px] text-soft mono">{product.weight}</span>
         </div>
       </div>
     </article>
