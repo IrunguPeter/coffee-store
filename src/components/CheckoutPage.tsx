@@ -26,8 +26,8 @@ export default function CheckoutPage() {
     return (
       <div className="page-width section">
         <div className="max-w-md mx-auto text-center">
-          <div className="w-20 h-20 rounded-full bg-[#00B04F]/10 flex items-center justify-center mx-auto mb-6">
-            <CheckCircle size={32} strokeWidth={2} className="text-[#00B04F]" />
+          <div className="w-20 h-20 rounded-full bg-mpesa/10 flex items-center justify-center mx-auto mb-6">
+            <CheckCircle size={32} strokeWidth={2} className="text-mpesa" />
           </div>
           <h1 className="text-3xl font-extrabold text-ink mb-2">Order placed!</h1>
           <p className="text-ink-variant mb-8">
@@ -93,7 +93,7 @@ export default function CheckoutPage() {
               <div className="space-y-5">
                 <div className="card p-5">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-8 h-8 rounded-full bg-[#00B04F] flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-full bg-mpesa flex items-center justify-center">
                       <span className="text-[10px] text-white font-bold">📱</span>
                     </div>
                     <span className="font-semibold text-ink">M-Pesa Till / PayBill</span>
@@ -111,8 +111,8 @@ export default function CheckoutPage() {
                       <span className="text-ink-variant">Amount</span>
                       <span className="text-xs font-bold text-ink">{formatPrice(subtotal)}</span>
                     </div>
-                    <div className="p-3 rounded-md bg-[#00B04F]/10 border border-[#00B04F]/20">
-                      <p className="text-[11px] text-[#009e43] font-semibold mb-1">
+                    <div className="p-3 rounded-md bg-mpesa/10 border border-mpesa/20">
+                      <p className="text-[11px] text-safari font-semibold mb-1">
                         An STK push will be sent to {form.phone || 'your registered number'}
                       </p>
                       <p className="text-[11px] text-soft">Enter your M-Pesa PIN to confirm.</p>

@@ -206,8 +206,8 @@ function CheckoutPanel({ onBack }: { onBack: () => void }) {
 function SuccessPanel({ onBack }: { onBack: () => void }) {
   return (
     <div className="p-6 text-center">
-      <div className="w-16 h-16 rounded-full bg-[#00B04F]/10 flex items-center justify-center mx-auto mb-4">
-        <CheckCircle size={24} strokeWidth={2} className="text-[#00B04F]" />
+      <div className="w-16 h-16 rounded-full bg-mpesa/10 flex items-center justify-center mx-auto mb-4">
+        <CheckCircle size={24} strokeWidth={2} className="text-mpesa" />
       </div>
       <h2 className="text-lg font-bold text-ink mb-2">Order placed!</h2>
       <p className="text-soft mb-6">Thank you for supporting Kenyan artisans. Your order is being packed.</p>

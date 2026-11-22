@@ -83,10 +83,10 @@
   }
 
   .btn-mpesa {
-    @apply btn bg-[#00B04F] text-white px-6 py-3 text-sm font-semibold min-h-[48px];
+    @apply btn bg-mpesa text-white px-6 py-3 text-sm font-semibold min-h-[48px];
   }
   .btn-mpesa:hover:not(:disabled) {
-    @apply bg-[#009e43] shadow-card;
+    @apply bg-safari-dark shadow-card;
   }
 
   .input {
