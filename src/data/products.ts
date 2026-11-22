@@ -48,7 +48,7 @@ export const PRODUCTS: Product[] = [
     stock: 34,
     featured: true,
     bestseller: true,
-    image: '/products/ethiopia-yirgacheffe.jpg',
+    image: 'https://images.unsplash.com/photo-1447933601403-0c698afde45e?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 'colombia-huila',
@@ -63,7 +63,7 @@ export const PRODUCTS: Product[] = [
     weight: '12 oz',
     stock: 52,
     featured: true,
-    image: '/products/colombia-huila.jpg',
+    image: 'https://images.unsplash.com/photo-1495474472287-4d71bc78a991?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 'sumatra-mandheling',
@@ -76,7 +76,7 @@ export const PRODUCTS: Product[] = [
     categoryLabel: 'Coffee',
     weight: '12 oz',
     stock: 28,
-    image: '/products/sumatra-mandheling.jpg',
+    image: 'https://images.unsplash.com/photo-1509059388597-a9961a6e8ac2?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 'house-blend',
@@ -90,7 +90,7 @@ export const PRODUCTS: Product[] = [
     weight: '12 oz',
     stock: 60,
     bestseller: true,
-    image: '/products/house-blend.jpg',
+    image: 'https://images.unsplash.com/photo-1559056199-641a0a8b852e?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 'espresso-blend',
@@ -104,7 +104,7 @@ export const PRODUCTS: Product[] = [
     weight: '12 oz',
     stock: 40,
     featured: true,
-    image: '/products/espresso-blend.jpg',
+    image: 'https://images.unsplash.com/photo-1517657613422-3a1321c678d0?q=80&w=800&auto=format&fit=crop',
   },
   // Tea
   {
@@ -119,7 +119,7 @@ export const PRODUCTS: Product[] = [
     weight: '30 g',
     stock: 26,
     new: true,
-    image: '/products/matcha-latte.jpg',
+    image: 'https://images.unsplash.com/photo-1615186893837-c1435f0c9a8b?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 'chai-concentrate',
@@ -132,7 +132,7 @@ export const PRODUCTS: Product[] = [
     categoryLabel: 'Tea',
     weight: '16 oz',
     stock: 18,
-    image: '/products/chai-concentrate.jpg',
+    image: 'https://images.unsplash.com/photo-1544787219-7f47ccb76574?q=80&w=800&auto=format&fit=crop',
   },
   // Kitchen
   {
@@ -146,7 +146,7 @@ export const PRODUCTS: Product[] = [
     categoryLabel: 'Kitchen',
     weight: '34 oz',
     stock: 14,
-    image: '/products/french-press.jpg',
+    image: 'https://images.unsplash.com/photo-1535034622062-6e189756853d?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 'pour-over-dripper',
@@ -158,7 +158,7 @@ export const PRODUCTS: Product[] = [
     category: 'kitchen',
     categoryLabel: 'Kitchen',
     stock: 20,
-    image: '/products/pour-over-dripper.jpg',
+    image: 'https://images.unsplash.com/photo-1529656337949-f1eeb8b004df?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 'gooseneck-kettle',
@@ -170,7 +170,7 @@ export const PRODUCTS: Product[] = [
     category: 'kitchen',
     categoryLabel: 'Kitchen',
     stock: 8,
-    image: '/products/gooseneck-kettle.jpg',
+    image: 'https://images.unsplash.com/photo-1585465275093-547788396e0d?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 'chef-knife',
@@ -184,7 +184,7 @@ export const PRODUCTS: Product[] = [
     categoryLabel: 'Kitchen',
     stock: 12,
     featured: true,
-    image: '/products/chef-knife.jpg',
+    image: 'https://images.unsplash.com/photo-1590047093189-1a717693ee31?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 'cast-iron-skillet',
@@ -196,7 +196,7 @@ export const PRODUCTS: Product[] = [
     category: 'kitchen',
     categoryLabel: 'Kitchen',
     stock: 16,
-    image: '/products/cast-iron-skillet.jpg',
+    image: 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?q=80&w=800&auto=format&fit=crop',
   },
   // Home
   {
@@ -209,7 +209,7 @@ export const PRODUCTS: Product[] = [
     category: 'home',
     categoryLabel: 'Home',
     stock: 36,
-    image: '/products/canvas-tote.jpg',
+    image: 'https://images.unsplash.com/photo-1553346708-fd2820b91233?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 'glass-mug',
@@ -221,7 +221,7 @@ export const PRODUCTS: Product[] = [
     category: 'home',
     categoryLabel: 'Home',
     stock: 29,
-    image: '/products/glass-mug.jpg',
+    image: 'https://images.unsplash.com/photo-1563399679-79793c401572?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 'throw-blanket',
@@ -234,7 +234,7 @@ export const PRODUCTS: Product[] = [
     categoryLabel: 'Home',
     stock: 22,
     new: true,
-    image: '/products/throw-blanket.jpg',
+    image: 'https://images.unsplash.com/photo-1543734497-0921c7f3c8b3?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 'ceramic-vase',
@@ -246,7 +246,7 @@ export const PRODUCTS: Product[] = [
     category: 'home',
     categoryLabel: 'Home',
     stock: 11,
-    image: '/products/ceramic-vase.jpg',
+    image: 'https://images.unsplash.com/photo-1518675471968-0c123d7e83f6?q=80&w=800&auto=format&fit=crop',
   },
   // Wellness
   {
@@ -259,7 +259,7 @@ export const PRODUCTS: Product[] = [
     category: 'wellness',
     categoryLabel: 'Wellness',
     stock: 18,
-    image: '/products/aroma-diffuser.jpg',
+    image: 'https://images.unsplash.com/photo-1601021059028-b024e4a0c080?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 'yoga-mat',
@@ -272,7 +272,7 @@ export const PRODUCTS: Product[] = [
     categoryLabel: 'Wellness',
     stock: 30,
     featured: true,
-    image: '/products/yoga-mat.jpg',
+    image: 'https://images.unsplash.com/photo-1544367567-0f2dde668912?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 'herbal-tea',
@@ -285,7 +285,7 @@ export const PRODUCTS: Product[] = [
     categoryLabel: 'Wellness',
     weight: '6 × 1.5 oz',
     stock: 40,
-    image: '/products/herbal-tea.jpg',
+    image: 'https://images.unsplash.com/photo-1565537577292-d05b9388a906?q=80&w=800&auto=format&fit=crop',
   },
   // Apparel
   {
@@ -298,7 +298,7 @@ export const PRODUCTS: Product[] = [
     category: 'apparel',
     categoryLabel: 'Apparel',
     stock: 44,
-    image: '/products/organic-tee.jpg',
+    image: 'https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 'wool-socks',
@@ -310,7 +310,7 @@ export const PRODUCTS: Product[] = [
     category: 'apparel',
     categoryLabel: 'Apparel',
     stock: 50,
-    image: '/products/wool-socks.jpg',
+    image: 'https://images.unsplash.com/photo-1604744826267-0a56a5b9c218?q=80&w=800&auto=format&fit=crop',
   },
   // Books
   {
@@ -324,7 +324,7 @@ export const PRODUCTS: Product[] = [
     categoryLabel: 'Books',
     stock: 25,
     new: true,
-    image: '/products/cookbook.jpg',
+    image: 'https://images.unsplash.com/photo-1544947951-fa475153bb82?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 'notebook',
@@ -336,7 +336,7 @@ export const PRODUCTS: Product[] = [
     category: 'books',
     categoryLabel: 'Books',
     stock: 60,
-    image: '/products/notebook.jpg',
+    image: 'https://images.unsplash.com/photo-1515753908618-064795f5e8d6?q=80&w=800&auto=format&fit=crop',
   },
   // Tech
   {
@@ -349,7 +349,7 @@ export const PRODUCTS: Product[] = [
     category: 'tech',
     categoryLabel: 'Tech',
     stock: 28,
-    image: '/products/wireless-charger.jpg',
+    image: 'https://images.unsplash.com/photo-1583497447615-3a28306b8fde?q=80&w=800&auto=format&fit=crop',
   },
   {
     id: 'bluetooth-speaker',
@@ -362,7 +362,7 @@ export const PRODUCTS: Product[] = [
     categoryLabel: 'Tech',
     stock: 14,
     featured: true,
-    image: '/products/bluetooth-speaker.jpg',
+    image: 'https://images.unsplash.com/photo-1589490333741-77f2fe2714e6?q=80&w=800&auto=format&fit=crop',
   },
 ];
 
