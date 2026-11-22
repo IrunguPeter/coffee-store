@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Plus, Trash2, Clock } from 'lucide-react';
 import type { Promo, DiscountType } from '../../data/promos';
-import { PROMOS, getPromo, isPromoValid } from '../../data/promos';
+import { usePromo } from '../../context/PromoContext';
 import { formatPrice, slugify } from '../../lib/utils';
 
 export default function PromosTab() {
-  const [promos, setPromos] = useState<Promo[]>([...PROMOS]);
+  const { promos, loading, error, createPromo, updatePromo, deletePromo, togglePromo, refetch } =
+    usePromo();
   const [editing, setEditing] = useState<Promo | null>(null);
   const [form, setForm] = useState<Partial<Promo> & { id?: string }>({});
 
@@ -14,12 +15,11 @@ export default function PromosTab() {
     setForm({});
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.code || !form.type || !form.value) return;
 
-    const newPromo: Promo = {
-      id: form.id || slugify(form.code as string),
+    const newPromo: Omit<Promo, 'id'> = {
       code: form.code as string,
       description: form.description || '',
       type: form.type as DiscountType,
@@ -34,13 +34,16 @@ export default function PromosTab() {
       createdAt: editing?.createdAt || new Date().toISOString(),
     };
 
-    if (editing) {
-      setPromos(promos.map((p) => (p.id === editing.id ? newPromo : p)));
-      setEditing(null);
-    } else {
-      setPromos([...promos, newPromo]);
+    try {
+      if (editing) {
+        await updatePromo(editing.id, newPromo);
+      } else {
+        await createPromo(newPromo);
+      }
+      resetForm();
+    } catch {
+      // Error is handled by context
     }
-    resetForm();
   };
 
   const handleEdit = (promo: Promo) => {
@@ -48,14 +51,14 @@ export default function PromosTab() {
     setForm({ ...promo });
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (window.confirm('Delete this promo code?')) {
-      setPromos(promos.filter((p) => p.id !== id));
+      await deletePromo(id);
     }
   };
 
-  const toggleActive = (id: string) => {
-    setPromos(promos.map((p) => (p.id === id ? { ...p, active: !p.active } : p)));
+  const toggleActive = async (id: string) => {
+    await togglePromo(id);
   };
 
   return (
@@ -69,6 +72,12 @@ export default function PromosTab() {
           <Plus size={18} strokeWidth={2} /> Add promo
         </button>
       </div>
+
+      {loading && <p className="text-soft">Loading promos...</p>}
+      {error && <p className="text-error">{error}</p>}
+      <button onClick={refetch} className="text-xs text-soft mb-4 underline underline-offset-2 hover:text-ink">
+        Refresh
+      </button>
 
       {editing && (
         <div className="card p-6 mb-8 max-w-2xl">
@@ -175,6 +184,13 @@ export default function PromosTab() {
       </div>
     </>
   );
+}
+
+function isPromoValid(promo: Promo): boolean {
+  if (!promo.active) return false;
+  if (promo.expiresAt && new Date(promo.expiresAt) < new Date()) return false;
+  if (promo.maxUses && promo.usedCount >= promo.maxUses) return false;
+  return true;
 }
 
 function AdminField({

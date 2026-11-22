@@ -5,66 +5,45 @@ export type Promo = {
   code: string;
   description: string;
   type: DiscountType;
-  value: number; // percentage (0-100) or fixed amount in cents
+  value: number;
   appliesTo: 'all' | 'category' | 'product';
-  targetId?: string; // category id or product id
-  minSpend?: number; // cents
+  targetId?: string;
+  minSpend?: number;
   maxUses?: number;
   usedCount: number;
-  expiresAt?: string; // ISO date string
+  expiresAt?: string;
   active: boolean;
   createdAt: string;
 };
 
-export const PROMOS: Promo[] = [
-  {
-    id: 'promo-1',
-    code: 'WELCOME10',
-    description: '10% off your first order',
-    type: 'percentage',
-    value: 10,
-    appliesTo: 'all',
-    minSpend: 1000,
-    maxUses: 100,
-    usedCount: 12,
-    expiresAt: '2027-12-31',
-    active: true,
-    createdAt: '2026-11-01',
-  },
-  {
-    id: 'promo-2',
-    code: 'COFFEE200',
-    description: 'KSh 200 off coffee orders over KSh 1000',
-    type: 'fixed',
-    value: 200,
-    appliesTo: 'category',
-    targetId: 'coffee',
-    minSpend: 1000,
-    maxUses: 50,
-    usedCount: 8,
-    expiresAt: '2026-12-31',
-    active: true,
-    createdAt: '2026-11-01',
-  },
-  {
-    id: 'promo-3',
-    code: 'FREESHIP',
-    description: 'Free shipping on all orders',
-    type: 'fixed',
-    value: 0,
-    appliesTo: 'all',
-    maxUses: 200,
-    usedCount: 45,
-    expiresAt: '2027-06-30',
-    active: true,
-    createdAt: '2026-11-01',
-  },
-];
+import { api } from '../lib/api';
 
-export function getPromo(code: string): Promo | undefined {
-  return PROMOS.find(
-    (p) => p.code.toLowerCase() === code.toLowerCase() && p.active,
-  );
+export async function getPromos(): Promise<Promo[]> {
+  return api.getPromos();
+}
+
+export async function getPromo(code: string): Promise<Promo | undefined> {
+  try {
+    return await api.getPromo(code);
+  } catch {
+    return undefined;
+  }
+}
+
+export async function createPromo(body: Omit<Promo, 'id'>) {
+  return api.createPromo(body);
+}
+
+export async function updatePromo(id: string, body: Partial<Promo>) {
+  return api.updatePromo(id, body);
+}
+
+export async function deletePromo(id: string) {
+  return api.deletePromo(id);
+}
+
+export async function togglePromo(id: string) {
+  return api.togglePromo(id);
 }
 
 export function isPromoValid(promo: Promo): boolean {

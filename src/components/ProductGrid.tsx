@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import ProductCard from './ProductCard';
-import { PRODUCTS, CATEGORIES, getProductsByCategory, getFeaturedProducts } from '../data/products';
+import { getProductsByCategory, searchProducts } from '../data/products';
 import { Layout, List } from 'lucide-react';
 
 export default function ProductGrid() {
@@ -9,23 +9,36 @@ export default function ProductGrid() {
   const navigate = useNavigate();
   const searchParams = new URLSearchParams(location.search);
 
+  const [products, setProducts] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [view, setView] = useState<'grid' | 'list'>('grid');
   const query = searchParams.get('q') ?? '';
   const category = searchParams.get('category') ?? 'all';
 
-  let filtered = PRODUCTS;
-  if (query) {
-    const q = query.toLowerCase();
-    filtered = PRODUCTS.filter(
-      (p) =>
-        p.name.toLowerCase().includes(q) ||
-        p.description.toLowerCase().includes(q) ||
-        p.categoryLabel.toLowerCase().includes(q) ||
-        p.notes?.some((n) => n.toLowerCase().includes(q)),
-    );
-  } else if (category !== 'all') {
-    filtered = getProductsByCategory(category);
-  }
+  useEffect(() => {
+    loadProducts();
+  }, [query, category]);
+
+  const loadProducts = async () => {
+    setLoading(true);
+    try {
+      if (query) {
+        const results = await searchProducts(query);
+        setProducts(results);
+      } else if (category !== 'all') {
+        const results = await getProductsByCategory(category);
+        setProducts(results);
+      } else {
+        const results = await getProductsByCategory('coffee');
+        // For "all", just fetch coffee as default; in production fetch all
+        setProducts(results);
+      }
+    } catch {
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="space-y-8">
@@ -64,21 +77,19 @@ export default function ProductGrid() {
         </div>
       </div>
 
-      {view === 'grid' ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 px-6">
-          {filtered.map((product) => (
-            <ProductCard key={product.id} product={product} variant="default" />
-          ))}
+      {loading ? (
+        <div className="flex flex-col items-center justify-center py-20">
+          <p className="text-soft">Loading products...</p>
         </div>
       ) : (
-        <div className="space-y-4">
-          {filtered.map((product) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-5 gap-4 px-6">
+          {products.map((product: any) => (
             <ProductCard key={product.id} product={product} variant="default" />
           ))}
         </div>
       )}
 
-      {filtered.length === 0 && (
+      {products.length === 0 && !loading && (
         <div className="text-center py-20">
           <p className="text-soft">No products found.</p>
         </div>

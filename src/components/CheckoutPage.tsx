@@ -146,42 +146,43 @@ export default function CheckoutPage() {
                 <button
                   onClick={() => {
                     setProcessing(true);
-                    // Simulate M-Pesa payment processing
-                    setTimeout(() => {
-                      const orderItems = items.map((item) => ({
-                        productId: item.product.id,
-                        name: item.product.name,
-                        price: item.product.price,
-                        quantity: item.quantity,
-                        total: item.product.price * item.quantity,
-                        weight: item.product.weight,
-                      }));
+                    const orderItems = items.map((item) => ({
+                      productId: item.product.id,
+                      name: item.product.name,
+                      price: item.product.price,
+                      quantity: item.quantity,
+                      total: item.product.price * item.quantity,
+                      weight: item.product.weight,
+                    }));
 
-                      createOrder({
-                        customer: {
-                          email: form.email,
-                          name: form.name,
-                          address: form.address,
-                          city: form.city,
-                          zip: form.zip,
-                          phone: form.phone,
-                        },
-                        items: orderItems,
-                        subtotal,
-                        discount,
-                        promoCode: appliedPromo?.code,
-                        promoDescription: appliedPromo?.description,
-                        total,
-                        status: 'paid',
-                        paymentMethod: 'mpesa',
-                        paymentReference: `MP${Date.now().toString().slice(-8)}`,
-                      });
-
+                    createOrder({
+                      customer: {
+                        email: form.email,
+                        name: form.name,
+                        address: form.address,
+                        city: form.city,
+                        zip: form.zip,
+                        phone: form.phone,
+                      },
+                      items: orderItems,
+                      subtotal,
+                      discount,
+                      promoCode: appliedPromo?.code,
+                      promoDescription: appliedPromo?.description,
+                      total,
+                      status: 'paid',
+                      paymentMethod: 'mpesa',
+                      paymentReference: `MP${Date.now().toString().slice(-8)}`,
+                    }).then(() => {
                       setProcessing(false);
                       clearCart();
                       closeCart();
                       setStep('success');
-                    }, 1500);
+                    }).catch((err) => {
+                      console.error('Order failed:', err);
+                      setProcessing(false);
+                      alert('Order failed. Please try again.');
+                    });
                   }}
                   disabled={processing}
                   className="w-full btn-mpesa py-4 text-base"

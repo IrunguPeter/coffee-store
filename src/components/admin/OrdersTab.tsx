@@ -1,7 +1,7 @@
-import { useState } from 'react';
-import { Trash2, CheckCircle, Clock, Truck, XCircle, RefreshCw } from 'lucide-react';
-import type { Order, OrderStatus } from '../../data/orders';
-import { getOrders, updateOrderStatus, getOrder } from '../../data/orders';
+import { useState, useEffect } from 'react';
+import { CheckCircle, RefreshCw } from 'lucide-react';
+import type { OrderStatus } from '../../data/orders';
+import { getOrders, updateOrderStatus } from '../../data/orders';
 import { formatPrice } from '../../lib/utils';
 import { InvoiceButton } from './InvoiceButton';
 
@@ -16,12 +16,36 @@ const STATUS_OPTIONS: StatusOption[] = [
 ];
 
 export default function OrdersTab() {
-  const [orders] = useState<Order[]>(getOrders());
-  const [viewingInvoice, setViewingInvoice] = useState<Order | null>(null);
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [viewingInvoice, setViewingInvoice] = useState<any | null>(null);
 
-  const handleStatusChange = (orderId: string, status: OrderStatus) => {
-    updateOrderStatus(orderId, status);
+  useEffect(() => {
+    loadOrders();
+  }, []);
+
+  const loadOrders = async () => {
+    setLoading(true);
+    try {
+      const data = await getOrders();
+      setOrders(data);
+    } catch {
+      setOrders([]);
+    } finally {
+      setLoading(false);
+    }
   };
+
+  const handleStatusChange = async (orderId: string, status: OrderStatus) => {
+    try {
+      await updateOrderStatus(orderId, status);
+      await loadOrders();
+    } catch {
+      alert('Failed to update order status');
+    }
+  };
+
+  if (loading) return <p className="text-soft">Loading orders...</p>;
 
   if (viewingInvoice) {
     return (
@@ -35,41 +59,41 @@ export default function OrdersTab() {
           </button>
           <div className="space-y-6">
             <div>
-              <h2 className="font-serif text-lg font-bold text-ink mb-2">Invoice {viewingInvoice.orderNumber}</h2>
-              <p className="text-[11px] text-soft mono tracking-wide uppercase">{new Date(viewingInvoice.createdAt).toLocaleDateString()}</p>
+              <h2 className="font-serif text-lg font-bold text-ink mb-2">Invoice {viewingInvoice.order_number}</h2>
+              <p className="text-[11px] text-soft mono tracking-wide uppercase">{new Date(viewingInvoice.created_at).toLocaleDateString()}</p>
             </div>
             <div className="space-y-4">
               <div className="flex justify-between">
                 <span className="text-soft">Customer</span>
-                <span className="text-ink">{viewingInvoice.customer.name}</span>
+                <span className="text-ink">{viewingInvoice.customer_name}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-soft">Email</span>
-                <span className="text-soft mono">{viewingInvoice.customer.email}</span>
+                <span className="text-soft mono">{viewingInvoice.customer_email}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-soft">Phone</span>
-                <span className="text-soft mono">{viewingInvoice.customer.phone}</span>
+                <span className="text-soft mono">{viewingInvoice.customer_phone}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-soft">Address</span>
-                <span className="text-soft">{viewingInvoice.customer.address}, {viewingInvoice.customer.city}</span>
+                <span className="text-soft">{viewingInvoice.customer_address}, {viewingInvoice.customer_city}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-soft">Payment</span>
-                <span className="text-ink">{viewingInvoice.paymentMethod === 'mpesa' ? 'M-Pesa Express' : 'Card'}</span>
+                <span className="text-ink">{viewingInvoice.payment_method === 'mpesa' ? 'M-Pesa Express' : 'Card'}</span>
               </div>
-              {viewingInvoice.paymentReference && (
+              {viewingInvoice.payment_reference && (
                 <div className="flex justify-between">
                   <span className="text-soft">M-Pesa ref</span>
-                  <span className="text-soft mono">{viewingInvoice.paymentReference}</span>
+                  <span className="text-soft mono">{viewingInvoice.payment_reference}</span>
                 </div>
               )}
             </div>
             <div className="pt-4 border-t border-line">
               <h3 className="font-serif text-md font-bold text-ink mb-3">Items</h3>
-              {viewingInvoice.items.map((item) => (
-                <div key={item.productId} className="flex justify-between items-start gap-4 pb-3 border-b border-line last:border-0">
+              {viewingInvoice.items?.map((item: any) => (
+                <div key={item.id} className="flex justify-between items-start gap-4 pb-3 border-b border-line last:border-0">
                   <div>
                     <div className="text-sm font-medium text-ink">{item.name}</div>
                     <div className="text-[11px] text-soft mono">{item.weight || ''}</div>
@@ -85,7 +109,7 @@ export default function OrdersTab() {
                 </div>
                 {viewingInvoice.discount > 0 && (
                   <div className="flex justify-between text-sm">
-                    <span className="text-soft">Discount ({viewingInvoice.promoCode})</span>
+                    <span className="text-soft">Discount ({viewingInvoice.promo_code})</span>
                     <span className="text-safari font-medium">- {formatPrice(viewingInvoice.discount)}</span>
                   </div>
                 )}
@@ -108,6 +132,12 @@ export default function OrdersTab() {
         </div>
         <div className="flex-1 lg:w-2/3 p-6">
           <h2 className="font-serif text-2xl font-bold text-ink mb-6">Orders</h2>
+          <button
+            onClick={loadOrders}
+            className="mb-4 btn-ghost flex items-center gap-2"
+          >
+            <RefreshCw size={16} strokeWidth={2} /> Refresh
+          </button>
           <div className="overflow-x-auto border border-line rounded-lg">
             <table className="w-full text-left">
               <thead>
@@ -121,17 +151,17 @@ export default function OrdersTab() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-line">
-                {orders.map((order) => {
+                {orders.map((order: any) => {
                   const statusOpt = STATUS_OPTIONS.find((s) => s.id === order.status);
                   return (
                     <tr key={order.id} className="hover:bg-safari/5 transition-colors cursor-pointer" onClick={() => setViewingInvoice(order)}>
                       <td className="p-4">
-                        <div className="text-sm font-medium text-ink">{order.orderNumber}</div>
-                        <div className="text-[11px] text-soft mono">{order.paymentMethod === 'mpesa' ? 'M-Pesa' : 'Card'}</div>
+                        <div className="text-sm font-medium text-ink">{order.order_number}</div>
+                        <div className="text-[11px] text-soft mono">{order.payment_method === 'mpesa' ? 'M-Pesa' : 'Card'}</div>
                       </td>
                       <td className="p-4">
-                        <div className="text-sm font-medium text-ink">{order.customer.name}</div>
-                        <div className="text-[11px] text-soft mono">{order.customer.email}</div>
+                        <div className="text-sm font-medium text-ink">{order.customer_name}</div>
+                        <div className="text-[11px] text-soft mono">{order.customer_email}</div>
                       </td>
                       <td className="p-4 text-sm font-medium text-ink text-right">{formatPrice(order.total)}</td>
                       <td className="p-4 text-center">
@@ -140,7 +170,7 @@ export default function OrdersTab() {
                         </span>
                       </td>
                       <td className="p-4 text-sm text-soft text-center">
-                        {new Date(order.createdAt).toLocaleDateString()}
+                        {new Date(order.created_at).toLocaleDateString()}
                       </td>
                       <td className="p-4 text-right">
                         <div className="flex items-center justify-end gap-2">
@@ -169,16 +199,14 @@ export default function OrdersTab() {
         </div>
       </div>
     );
-  }
+  };
 
   return (
     <div>
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
         <h2 className="font-serif text-2xl font-bold text-ink">Orders</h2>
         <button
-          onClick={() => {
-            // Refresh orders
-          }}
+          onClick={loadOrders}
           className="btn-ghost flex items-center gap-2"
         >
           <RefreshCw size={16} strokeWidth={2} /> Refresh
@@ -197,17 +225,17 @@ export default function OrdersTab() {
             </tr>
           </thead>
           <tbody className="divide-y divide-line">
-            {orders.map((order) => {
+            {orders.map((order: any) => {
               const statusOpt = STATUS_OPTIONS.find((s) => s.id === order.status);
               return (
                 <tr key={order.id} className="hover:bg-safari/5 transition-colors cursor-pointer" onClick={() => setViewingInvoice(order)}>
                   <td className="p-4">
-                    <div className="text-sm font-medium text-ink">{order.orderNumber}</div>
-                    <div className="text-[11px] text-soft mono">{order.paymentMethod === 'mpesa' ? 'M-Pesa' : 'Card'}</div>
+                    <div className="text-sm font-medium text-ink">{order.order_number}</div>
+                    <div className="text-[11px] text-soft mono">{order.payment_method === 'mpesa' ? 'M-Pesa' : 'Card'}</div>
                   </td>
                   <td className="p-4">
-                    <div className="text-sm font-medium text-ink">{order.customer.name}</div>
-                    <div className="text-[11px] text-soft mono">{order.customer.email}</div>
+                    <div className="text-sm font-medium text-ink">{order.customer_name}</div>
+                    <div className="text-[11px] text-soft mono">{order.customer_email}</div>
                   </td>
                   <td className="p-4 text-sm font-medium text-ink text-right">{formatPrice(order.total)}</td>
                   <td className="p-4 text-center">
@@ -216,7 +244,7 @@ export default function OrdersTab() {
                     </span>
                   </td>
                   <td className="p-4 text-sm text-soft text-center">
-                    {new Date(order.createdAt).toLocaleDateString()}
+                    {new Date(order.created_at).toLocaleDateString()}
                   </td>
                   <td className="p-4 text-right">
                     <div className="flex items-center justify-end gap-2">

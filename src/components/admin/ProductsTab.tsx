@@ -1,25 +1,42 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Plus, Trash2 } from 'lucide-react';
 import type { Product } from '../../data/products';
-import { PRODUCTS, CATEGORIES } from '../../data/products';
+import { createProduct, updateProduct, deleteProduct, getProducts } from '../../data/products';
 import { formatPrice, slugify } from '../../lib/utils';
+import { CATEGORIES } from '../../data/products';
 
 export default function ProductsTab() {
-  const [products, setProducts] = useState<Product[]>([...PRODUCTS]);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState<Product | null>(null);
   const [form, setForm] = useState<Partial<Product> & { id?: string }>({});
+
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
+  const loadProducts = async () => {
+    setLoading(true);
+    try {
+      const data = await getProducts();
+      setProducts(data);
+    } catch {
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const resetForm = () => {
     setEditing(null);
     setForm({});
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!form.name || !form.price || !form.category) return;
 
-    const newProduct: Product = {
-      id: form.id || slugify(form.name as string),
+    const newProduct: Omit<Product, 'id'> = {
       name: form.name as string,
       description: form.description || '',
       shortDescription: form.shortDescription || '',
@@ -33,13 +50,17 @@ export default function ProductsTab() {
       new: form.new === 'true',
     };
 
-    if (editing) {
-      setProducts(products.map((p) => (p.id === editing.id ? newProduct : p)));
-      setEditing(null);
-    } else {
-      setProducts([...products, newProduct]);
+    try {
+      if (editing) {
+        await updateProduct(editing.id, newProduct);
+      } else {
+        await createProduct(newProduct);
+      }
+      await loadProducts();
+      resetForm();
+    } catch {
+      // Error handled by toast/alert
     }
-    resetForm();
   };
 
   const handleEdit = (product: Product) => {
@@ -47,11 +68,14 @@ export default function ProductsTab() {
     setForm({ ...product });
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (window.confirm('Delete this product?')) {
-      setProducts(products.filter((p) => p.id !== id));
+      await deleteProduct(id);
+      await loadProducts();
     }
   };
+
+  if (loading) return <p className="text-soft">Loading products...</p>;
 
   return (
     <>

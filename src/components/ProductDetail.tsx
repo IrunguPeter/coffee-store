@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Mail, Clock, MapPin, ArrowLeft } from 'lucide-react';
 import { useCart } from '../context/CartContext';
@@ -11,7 +11,33 @@ export default function ProductDetail() {
   const navigate = useNavigate();
   const { addItem } = useCart();
 
-  const product = getProduct(id ?? '');
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadProduct();
+  }, [id]);
+
+  const loadProduct = async () => {
+    setLoading(true);
+    try {
+      const p = await getProduct(id ?? '');
+      setProduct(p);
+    } catch {
+      setProduct(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="page-width section text-center py-20">
+        <p className="text-soft">Loading product...</p>
+      </div>
+    );
+  }
+
   if (!product) {
     return (
       <div className="page-width section text-center">
@@ -86,7 +112,7 @@ export default function ProductDetail() {
 
             <div>
               <h3 className="font-serif text-lg font-bold text-ink mb-2">About this product</h3>
-              <p className="text-soft leading-relaxed max-w-md">{product.description}</p>
+              <p className="text-ink-variant leading-relaxed max-w-md">{product.description}</p>
             </div>
 
             <div className="pt-4 border-t border-line space-y-4">

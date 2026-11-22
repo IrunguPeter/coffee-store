@@ -1,7 +1,7 @@
-import { createContext, useContext, useCallback, useState, useMemo } from 'react';
+import { createContext, useContext, useCallback, useState, useMemo, useEffect } from 'react';
 import type { Product } from '../data/products';
 import type { Promo } from '../data/promos';
-import { getPromo, isPromoValid, calculateDiscount } from '../data/promos';
+import { getPromo, calculateDiscount, isPromoValid } from '../data/promos';
 
 export type CartItem = {
   product: Product;
@@ -16,20 +16,20 @@ type CartContextType = {
   clearCart: () => void;
   itemCount: number;
   subtotal: number;
+  discount: number;
+  total: number;
   isOpen: boolean;
   openCart: () => void;
   closeCart: () => void;
   toggleCart: () => void;
-  // Promo support
+  // Promo support (async via API)
   appliedPromo: Promo | null;
   promoCode: string;
   promoError: string | null;
+  promoLoading: boolean;
   setPromoCode: (code: string) => void;
-  applyPromo: () => { discount: number; description: string };
+  applyPromo: () => Promise<{ discount: number; description: string }>;
   removePromo: () => void;
-  validatePromo: (code: string) => { valid: boolean; promo: Promo | null; message: string };
-  discount: number;
-  total: number;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -40,6 +40,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [promoCode, setPromoCodeState] = useState('');
   const [appliedPromo, setAppliedPromo] = useState<Promo | null>(null);
   const [promoError, setPromoError] = useState<string | null>(null);
+  const [promoLoading, setPromoLoading] = useState(false);
 
   const addItem = useCallback((product: Product, quantity = 1) => {
     setItems((prev) => {
@@ -81,24 +82,8 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     [items],
   );
 
-  // Promo logic
-  const validatePromo = useCallback((code: string) => {
-    if (!code.trim()) {
-      return { valid: false, promo: null, message: 'Please enter a promo code' };
-    }
-    const promo = getPromo(code);
-    if (!promo) {
-      return { valid: false, promo: null, message: 'Invalid promo code' };
-    }
-    if (!isPromoValid(promo)) {
-      return { valid: false, promo: null, message: 'This promo code is no longer valid' };
-    }
-    return { valid: true, promo, message: 'Promo code applied' };
-  }, []);
-
   const discount = useMemo(() => {
     if (!appliedPromo) return 0;
-    // Calculate applicable subtotal based on promo scope
     let applicableSubtotal = subtotal;
     if (appliedPromo.appliesTo === 'category' && appliedPromo.targetId) {
       applicableSubtotal = items
@@ -129,21 +114,30 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setPromoError(null);
   }, []);
 
-  const applyPromo = useCallback(() => {
-    const result = validatePromo(promoCode);
-    if (result.valid && result.promo) {
-      // Check min spend
-      if (result.promo.minSpend && subtotal < result.promo.minSpend) {
-        setPromoError(`Minimum spend of KSh ${(result.promo.minSpend / 100).toFixed(0)} required`);
+  const applyPromo = useCallback(async () => {
+    if (!promoCode.trim()) return { discount: 0, description: '' };
+    setPromoLoading(true);
+    setPromoError(null);
+    try {
+      const promo = await getPromo(promoCode);
+      if (!promo || !isPromoValid(promo)) {
+        setPromoError('Invalid or expired promo code');
         return { discount: 0, description: '' };
       }
-      setAppliedPromo(result.promo);
-      setPromoError(null);
-      return { discount, description: result.promo.type === 'percentage' ? `${result.promo.value}% off` : `KSh ${(result.promo.value / 100).toFixed(0)} off` };
+      if (promo.minSpend && subtotal < promo.minSpend) {
+        setPromoError(`Minimum spend of KSh ${(promo.minSpend / 100).toFixed(0)} required`);
+        return { discount: 0, description: '' };
+      }
+      setAppliedPromo(promo);
+      const { discount, description } = calculateDiscount(promo, subtotal, subtotal);
+      return { discount, description };
+    } catch {
+      setPromoError('Failed to validate promo code');
+      return { discount: 0, description: '' };
+    } finally {
+      setPromoLoading(false);
     }
-    setPromoError(result.message);
-    return { discount: 0, description: '' };
-  }, [promoCode, subtotal, discount, validatePromo]);
+  }, [promoCode, subtotal]);
 
   const openCart = useCallback(() => setIsOpen(true), []);
   const closeCart = useCallback(() => setIsOpen(false), []);
@@ -167,12 +161,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       appliedPromo,
       promoCode,
       promoError,
+      promoLoading,
       setPromoCode,
       applyPromo,
       removePromo,
-      validatePromo,
     }),
-    [items, addItem, removeItem, updateQuantity, clearCart, itemCount, subtotal, discount, total, isOpen, openCart, closeCart, toggleCart, appliedPromo, promoCode, promoError, setPromoCode, applyPromo, removePromo, validatePromo],
+    [items, addItem, removeItem, updateQuantity, clearCart, itemCount, subtotal, discount, total, isOpen, openCart, closeCart, toggleCart, appliedPromo, promoCode, promoError, promoLoading, setPromoCode, applyPromo, removePromo],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;

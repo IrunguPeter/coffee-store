@@ -3,9 +3,9 @@ export type OrderStatus = 'pending' | 'paid' | 'fulfilled' | 'shipped' | 'cancel
 export type OrderItem = {
   productId: string;
   name: string;
-  price: number; // cents
+  price: number;
   quantity: number;
-  total: number; // cents
+  total: number;
   weight?: string;
 };
 
@@ -21,62 +21,39 @@ export type Order = {
     phone: string;
   };
   items: OrderItem[];
-  subtotal: number; // cents
-  discount: number; // cents
+  subtotal: number;
+  discount: number;
   promoCode?: string;
   promoDescription?: string;
-  total: number; // cents
+  total: number;
   status: OrderStatus;
   paymentMethod: 'mpesa' | 'card';
-  paymentReference?: string; // M-Pesa transaction ID
-  createdAt: string; // ISO date string
+  paymentReference?: string;
+  createdAt: string;
 };
 
-let orders: Order[] = [];
-let orderCounter = 1000;
+import { api } from '../lib/api';
 
-export function getOrders(): Order[] {
-  return [...orders].sort((a, b) => b.createdAt.localeCompare(a.createdAt));
+export async function getOrders(): Promise<Order[]> {
+  return api.getOrders();
 }
 
-export function getOrder(id: string): Order | undefined {
-  return orders.find((o) => o.id === id);
+export async function getOrder(id: string): Promise<Order | undefined> {
+  try {
+    return await api.getOrder(id);
+  } catch {
+    return undefined;
+  }
 }
 
-export function getOrderByNumber(orderNumber: string): Order | undefined {
-  return orders.find((o) => o.orderNumber === orderNumber);
+export async function createOrder(order: Omit<Order, 'id' | 'orderNumber' | 'createdAt'>) {
+  return api.createOrder(order);
 }
 
-export function createOrder(order: Omit<Order, 'id' | 'orderNumber' | 'createdAt'>): Order {
-  const newOrder: Order = {
-    ...order,
-    id: `order-${Date.now()}`,
-    orderNumber: `E${orderCounter++}`,
-    createdAt: new Date().toISOString(),
-  };
-  orders.push(newOrder);
-  return newOrder;
+export async function updateOrderStatus(id: string, status: OrderStatus) {
+  return api.updateOrderStatus(id, status);
 }
 
-export function updateOrderStatus(id: string, status: OrderStatus): boolean {
-  const order = orders.find((o) => o.id === id);
-  if (!order) return false;
-  order.status = status;
-  return true;
-}
-
-export function getOrderStats() {
-  const all = getOrders();
-  const totalSales = all.reduce((sum, o) => sum + o.total, 0);
-  const paidOrders = all.filter((o) => o.status === 'paid' || o.status === 'fulfilled' || o.status === 'shipped');
-  const pendingOrders = all.filter((o) => o.status === 'pending');
-  const fulfilledOrders = all.filter((o) => o.status === 'fulfilled' || o.status === 'shipped');
-  return {
-    totalOrders: all.length,
-    totalSales,
-    pendingOrders: pendingOrders.length,
-    paidOrders: paidOrders.length,
-    fulfilledOrders: fulfilledOrders.length,
-    averageOrderValue: all.length > 0 ? Math.round(totalSales / all.length) : 0,
-  };
+export async function getOrderStats() {
+  return api.getOrderStats();
 }

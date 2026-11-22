@@ -1,85 +1,106 @@
-import { createContext, useContext, useCallback, useState, useMemo } from 'react';
+import { createContext, useContext, useCallback, useState, useMemo, useEffect } from 'react';
 import type { Promo } from '../data/promos';
-import { getPromo, calculateDiscount, isPromoValid } from '../data/promos';
+import { getPromos, createPromo, updatePromo, deletePromo, togglePromo } from '../data/promos';
 
 type PromoContextType = {
-  appliedPromo: Promo | null;
-  promoCode: string;
-  promoError: string | null;
-  setPromoCode: (code: string) => void;
-  applyPromo: (subtotal: number, applicableSubtotal: number) => { discount: number; description: string };
-  removePromo: () => void;
-  validatePromo: (code: string) => { valid: boolean; promo: Promo | null; message: string };
+  promos: Promo[];
+  loading: boolean;
+  error: string | null;
+  createPromo: (body: Omit<Promo, 'id'>) => Promise<void>;
+  updatePromo: (id: string, body: Partial<Promo>) => Promise<void>;
+  deletePromo: (id: string) => Promise<void>;
+  togglePromo: (id: string) => Promise<void>;
+  refetch: () => Promise<void>;
 };
 
 const PromoContext = createContext<PromoContextType | undefined>(undefined);
 
 export function PromoProvider({ children }: { children: React.ReactNode }) {
-  const [promoCode, setPromoCodeState] = useState('');
-  const [appliedPromo, setAppliedPromo] = useState<Promo | null>(null);
-  const [promoError, setPromoError] = useState<string | null>(null);
+  const [promos, setPromos] = useState<Promo[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const validatePromo = useCallback((code: string) => {
-    if (!code.trim()) {
-      return { valid: false, promo: null, message: 'Please enter a promo code' };
-    }
-    const promo = getPromo(code);
-    if (!promo) {
-      return { valid: false, promo: null, message: 'Invalid promo code' };
-    }
-    if (!isPromoValid(promo)) {
-      return { valid: false, promo: null, message: 'This promo code is no longer valid' };
-    }
-    return { valid: true, promo, message: 'Promo code applied' };
-  }, []);
-
-  const applyPromo = useCallback(
-    (subtotal: number, applicableSubtotal: number) => {
-      if (!appliedPromo) return { discount: 0, description: '' };
-      return calculateDiscount(appliedPromo, subtotal, applicableSubtotal);
-    },
-    [appliedPromo],
-  );
-
-  const setPromoCode = useCallback((code: string) => {
-    setPromoCodeState(code);
-    setPromoError(null);
-    if (!code.trim()) {
-      setAppliedPromo(null);
+  const fetchPromos = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await getPromos();
+      setPromos(data);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to load promos');
+    } finally {
+      setLoading(false);
     }
   }, []);
 
-  const removePromo = useCallback(() => {
-    setPromoCodeState('');
-    setAppliedPromo(null);
-    setPromoError(null);
-  }, []);
+  useEffect(() => {
+    fetchPromos();
+  }, [fetchPromos]);
 
-  const handleApply = useCallback(
-    (subtotal: number, applicableSubtotal: number) => {
-      const result = validatePromo(promoCode);
-      if (result.valid && result.promo) {
-        setAppliedPromo(result.promo);
-        setPromoError(null);
-        return calculateDiscount(result.promo, subtotal, applicableSubtotal);
-      }
-      setPromoError(result.message);
-      return { discount: 0, description: '' };
-    },
-    [promoCode, validatePromo],
-  );
+  const createPromoHandler = useCallback(async (body: Omit<Promo, 'id'>) => {
+    setLoading(true);
+    setError(null);
+    try {
+      await createPromo(body);
+      await fetchPromos();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to create promo');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchPromos]);
+
+  const updatePromoHandler = useCallback(async (id: string, body: Partial<Promo>) => {
+    setLoading(true);
+    setError(null);
+    try {
+      await updatePromo(id, body);
+      await fetchPromos();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to update promo');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchPromos]);
+
+  const deletePromoHandler = useCallback(async (id: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      await deletePromo(id);
+      await fetchPromos();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to delete promo');
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  }, [fetchPromos]);
+
+  const togglePromoHandler = useCallback(async (id: string) => {
+    try {
+      await togglePromo(id);
+      await fetchPromos();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to toggle promo');
+      throw err;
+    }
+  }, [fetchPromos]);
 
   const value = useMemo(
     () => ({
-      appliedPromo,
-      promoCode,
-      promoError,
-      setPromoCode,
-      applyPromo: handleApply,
-      removePromo,
-      validatePromo,
+      promos,
+      loading,
+      error,
+      createPromo: createPromoHandler,
+      updatePromo: updatePromoHandler,
+      deletePromo: deletePromoHandler,
+      togglePromo: togglePromoHandler,
+      refetch: fetchPromos,
     }),
-    [appliedPromo, promoCode, promoError, setPromoCode, handleApply, removePromo, validatePromo],
+    [promos, loading, error, createPromoHandler, updatePromoHandler, deletePromoHandler, togglePromoHandler, fetchPromos],
   );
 
   return <PromoContext.Provider value={value}>{children}</PromoContext.Provider>;
