@@ -10,13 +10,13 @@ export default function Hero() {
       <div className="page-width relative">
         <div className="max-w-2xl">
           <span className="inline-block mb-3 px-3 py-1 rounded-full bg-coffee/10 text-coffee text-xs mono font-medium tracking-wide uppercase border border-coffee/20">
-            Freshly roasted · Shipped weekly
+            Curated essentials
           </span>
           <h1 className="font-display text-4xl md:text-6xl font-bold text-ink leading-tight mb-6">
             Good things, delivered.
           </h1>
           <p className="text-soft text-lg md:text-xl mb-8 max-w-xl leading-relaxed">
-            Coffee, tea, kitchenware, home goods, and more — curated essentials for everyday life.
+            Coffee, tea, kitchenware, home goods, and more. Essentials for everyday life.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
             <Link to="/shop" className="btn-primary">
